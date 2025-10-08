@@ -9,7 +9,6 @@
 <body>
     <header>
         <nav class="navbar">
-
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="ScanProduct.html">Scan Product</a></li>
@@ -20,6 +19,16 @@
         </nav>
     </header>
 
-    
+    <main>
+        <h2>Scan a Product</h2>
+        <video id="camera" autoplay playsinline width="300" height="200" style="border: 1px solid #ccc;"></video>
+        <p id="result">Waiting for scan...</p>
+        <button id="startButton">Start Scanning</button>
+        <button id="stopButton">Stop Scanning</button>
+        
+    </main>
+
+    <script src="https://unpkg.com/@zxing/browser@latest"></script>
+    <script src="../../Backend/CameraScanner.js"></script>
 </body>
 </html>

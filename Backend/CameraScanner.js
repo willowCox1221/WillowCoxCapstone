@@ -9,7 +9,7 @@ let scanning = false;
 
 startButton.addEventListener('click', async () => {
     if (scanning) {
-        resultElement.textContent = "⚠️ Scanner already running!";
+        resultElement.textContent = "Scanner already running!";
         return;
     }
 
@@ -17,7 +17,7 @@ startButton.addEventListener('click', async () => {
         const videoInputDevices = await codeReader.listVideoInputDevices();
 
         if (videoInputDevices.length === 0) {
-            resultElement.textContent = '❌ No camera found.';
+            resultElement.textContent = 'No camera found.';
             return;
         }
 
@@ -53,3 +53,13 @@ stopButton.addEventListener('click', async () => {
     scanning = false;
     resultElement.textContent = "✅ Scanning stopped.";
 });
+
+// console.log("✅ CameraScanner.js loaded");
+
+// const startButton = document.getElementById('startButton');
+// const resultElement = document.getElementById('result');
+
+// startButton.addEventListener('click', () => {
+//     console.log("🎯 Start button clicked");
+//     resultElement.textContent = "Start button works!";
+// });

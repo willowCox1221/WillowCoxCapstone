@@ -20,7 +20,22 @@
     </header>
 
     <main>
-        <h1>Welcome to My Webpage</h1>
+        <h2>Scan a Product</h2>
+        <video id="camera" autoplay playsinline></video>
+        <p id="result">Waiting for scan...</p>
     </main>
+
+<script src="https://unpkg.com/@zxing/browser@latest"></script>
+<script>
+    const codeReader = new ZXing.BrowserMultiFormatReader();
+    const videoElem = document.getElementById('camera');
+    const resultElem = document.getElementById('result');
+
+    codeReader.decodeFromVideoDevice(null, videoElem, (result, err) => {
+    if (result) {
+        resultElem.textContent = `Barcode: ${result.text}`;
+    }
+});
+</script>
 </body>
 </html>

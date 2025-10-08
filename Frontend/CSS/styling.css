@@ -41,6 +41,32 @@ main {
     text-align: center;
 }
 
+video {
+    width: 90%;
+    max-width: 500px;
+    border: 2px solid #0078d7;
+    border-radius: 10px;
+}
+
+p {
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0078d7;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005ea0;
+}
+
 /* Responsive Navigation (for mobile) */
 @media (max-width: 600px) {
     .nav-links {

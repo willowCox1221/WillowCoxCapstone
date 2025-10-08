@@ -1,90 +1,64 @@
-const codeReader = new ZXing.BrowserMultiFormatReader();
-const videoElement = document.getElementById('camera');
-const resultElement = document.getElementById('result');
-const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
+window.addEventListener("DOMContentLoaded", () => {
+    const startButton = document.getElementById("startButton");
+    const stopButton = document.getElementById("stopButton");
+    const video = document.getElementById("camera");
+    const result = document.getElementById("result");
 
-let scanning = false;
-let currentDeviceId = null;
+    let codeReader = new ZXing.BrowserMultiFormatReader();
+    let scanning = false;
 
-startButton.addEventListener('click', async () => {
-    if (scanning) {
-        resultElement.textContent = "⚠️ Scanner already running!";
-        return;
-    }
-
-    try {
-        console.log("🎥 Listing video input devices...");
-        const videoInputDevices = await codeReader.listVideoInputDevices();
-
-        if (videoInputDevices.length === 0) {
-            resultElement.textContent = '❌ No camera found.';
+    startButton.addEventListener("click", async () => {
+        if (scanning) {
+            result.textContent = "Scanner already running!";
             return;
         }
 
-        // Prefer the back camera on mobile
-        const backCamera = videoInputDevices.find(device =>
-            device.label.toLowerCase().includes('back')
-        ) || videoInputDevices[0];
+        try {
+            result.textContent = "Starting camera...";
 
-        currentDeviceId = backCamera.deviceId;
-        scanning = true;
-        resultElement.textContent = '📷 Scanning in progress...';
+            // ✅ The method is now part of the codeReader instance
+            const devices = await codeReader.listVideoInputDevices();
 
-        console.log("📸 Using camera:", backCamera.label || "Unnamed camera");
-
-        await codeReader.decodeFromVideoDevice(currentDeviceId, videoElement, (result, err) => {
-            if (result) {
-                resultElement.textContent = `✅ Scanned Code: ${result.text}`;
-                console.log("🎯 Scan result:", result.text);
-
-                // 🛑 Stop the camera right after successful scan
-                codeReader.reset();
-                scanning = false;
-
-                if (videoElement.srcObject) {
-                    const tracks = videoElement.srcObject.getTracks();
-                    tracks.forEach(track => track.stop());
-                    videoElement.srcObject = null;
-                }
-
-                resultElement.textContent += "\nCamera stopped automatically.";
-            } else if (err && !(err instanceof ZXing.NotFoundException)) {
-                console.error(err);
-                resultElement.textContent = `Error: ${err}`;
+            if (devices.length === 0) {
+                result.textContent = "No camera found.";
+                return;
             }
-        });
 
-    } catch (err) {
-        console.error("Camera start error:", err);
-        resultElement.textContent = '⚠️ Camera access denied or error occurred.';
-    }
+            const backCamera =
+                devices.find(d => d.label.toLowerCase().includes("back")) || devices[0];
+
+            scanning = true;
+
+            await codeReader.decodeFromVideoDevice(
+                backCamera.deviceId,
+                video,
+                (scanResult, err) => {
+                    if (scanResult) {
+                        result.textContent = `✅ Scanned Code: ${scanResult.text}`;
+
+                        // 🛑 Stop camera automatically after success
+                        codeReader.reset();
+                        scanning = false;
+                    } else if (err && !(err instanceof ZXing.NotFoundException)) {
+                        console.error(err);
+                        result.textContent = `Error: ${err}`;
+                    }
+                }
+            );
+        } catch (err) {
+            console.error("Error starting scanner:", err);
+            result.textContent = "⚠️ Camera access denied or error occurred.";
+        }
+    });
+
+    stopButton.addEventListener("click", () => {
+        if (!scanning) {
+            result.textContent = "Scanner not running.";
+            return;
+        }
+
+        codeReader.reset();
+        scanning = false;
+        result.textContent = "🛑 Scanning stopped.";
+    });
 });
-
-stopButton.addEventListener('click', () => {
-    if (!scanning) {
-        resultElement.textContent = "🛑 Scanner is not running.";
-        return;
-    }
-
-    codeReader.reset();
-    scanning = false;
-
-    if (videoElement.srcObject) {
-        const tracks = videoElement.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-        videoElement.srcObject = null;
-    }
-
-    resultElement.textContent = "✅ Scanning stopped manually.";
-});
-
-// console.log("✅ CameraScanner.js loaded");
-
-// const startButton = document.getElementById('startButton');
-// const resultElement = document.getElementById('result');
-
-// startButton.addEventListener('click', () => {
-//     console.log("🎯 Start button clicked");
-//     resultElement.textContent = "Start button works!";
-// });

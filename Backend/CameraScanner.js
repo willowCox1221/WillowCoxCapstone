@@ -4,7 +4,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const video = document.getElementById("camera");
     const result = document.getElementById("result");
 
-    let codeReader = new ZXing.BrowserMultiFormatReader();
+    const codeReader = new ZXing.BrowserMultiFormatReader();
     let scanning = false;
 
     startButton.addEventListener("click", async () => {
@@ -16,7 +16,6 @@ window.addEventListener("DOMContentLoaded", () => {
         try {
             result.textContent = "Starting camera...";
 
-            // ✅ The method is now part of the codeReader instance
             const devices = await codeReader.listVideoInputDevices();
 
             if (devices.length === 0) {
@@ -29,22 +28,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
             scanning = true;
 
-            await codeReader.decodeFromVideoDevice(
-                backCamera.deviceId,
-                video,
-                (scanResult, err) => {
-                    if (scanResult) {
-                        result.textContent = `✅ Scanned Code: ${scanResult.text}`;
-
-                        // 🛑 Stop camera automatically after success
-                        codeReader.reset();
-                        scanning = false;
-                    } else if (err && !(err instanceof ZXing.NotFoundException)) {
-                        console.error(err);
-                        result.textContent = `Error: ${err}`;
-                    }
+            codeReader.decodeFromVideoDevice(backCamera.deviceId, video, (scanResult, error) => {
+                if (scanResult) {
+                    result.textContent = `✅ Scanned Code: ${scanResult.getText()}`;
+                    codeReader.reset();
+                    scanning = false;
                 }
-            );
+                if (error && !(error instanceof ZXing.NotFoundException)) {
+                    console.error(error);
+                }
+            });
         } catch (err) {
             console.error("Error starting scanner:", err);
             result.textContent = "⚠️ Camera access denied or error occurred.";
@@ -59,6 +52,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
         codeReader.reset();
         scanning = false;
-        result.textContent = "🛑 Scanning stopped.";
+        result.textContent = "Scanning stopped.";
     });
 });

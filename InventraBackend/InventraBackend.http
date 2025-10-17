@@ -1,0 +1,6 @@
+@InventraBackend_HostAddress = http://localhost:5034
+
+GET {{InventraBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "v6/jQedX8odQrCmjc2dnJJjYfPx4jfloZOGvX7bikfI=",
+  "Source": "InventraBackend",
+  "BasePath": "_content/InventraBackend",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

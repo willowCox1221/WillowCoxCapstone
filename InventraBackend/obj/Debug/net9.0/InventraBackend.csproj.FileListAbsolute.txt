@@ -1,3 +1,11 @@
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.csproj.AssemblyReference.cache
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.AssemblyInfoInputs.cache
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.AssemblyInfo.cs
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.csproj.CoreCompileInputs.cache
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.sourcelink.json
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\appsettings.json
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\InventraBackend.staticwebassets.endpoints.json
@@ -17,14 +25,6 @@ C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\Swashbuck
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\bin\Debug\net9.0\ZstdSharp.dll
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.csproj.AssemblyReference.cache
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.AssemblyInfoInputs.cache
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.AssemblyInfo.cs
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.csproj.CoreCompileInputs.cache
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\InventraBackend.sourcelink.json
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\scopedcss\bundle\InventraBackend.styles.css
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\Willow Cox\WillowCoxCapstone\InventraBackend\obj\Debug\net9.0\staticwebassets.development.json

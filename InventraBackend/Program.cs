@@ -1,4 +1,6 @@
+
 using InventraBackend.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,5 +20,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.MapControllers();
+
 app.Run();

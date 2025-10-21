@@ -13,7 +13,7 @@ namespace InventraBackend.Controllers
         {
             _inventoryService = inventoryService;
         }
-
+/////////////////////////POSTS/////////////////////////////////////
         [HttpPost("add")]
         public async Task<IActionResult> AddToInventory([FromBody] dynamic body)
         {
@@ -26,7 +26,7 @@ namespace InventraBackend.Controllers
             await _inventoryService.AddItemAsync(userId, code);
             return Ok(new { success = true });
         }
-
+////////////////////////GETS//////////////////////////////////////
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetInventory(string userId)
         {

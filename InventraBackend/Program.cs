@@ -1,5 +1,7 @@
 
 using InventraBackend.Services;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);

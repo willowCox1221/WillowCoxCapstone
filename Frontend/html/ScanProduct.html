@@ -33,5 +33,61 @@
 
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script src="../Javascript/CameraScanner.js"></script>
+    
+    <script>
+    const translations = {
+        en: {
+        home: "Home",
+        scan: "Scan Product",
+        inventory: "Inventory",
+        login: "Login",
+        signup: "Sign Up",
+        scanHeader: "Scan a Product",
+        waiting: "Waiting for scan...",
+        start: "Start Scanning",
+        stop: "Stop Scanning",
+        },
+        es: {
+        home: "Inicio",
+        scan: "Escanear Producto",
+        inventory: "Inventario",
+        login: "Iniciar Sesión",
+        signup: "Registrarse",
+        scanHeader: "Escanea un producto",
+        waiting: "Esperando escaneo...",
+        start: "Comenzar escaneo",
+        stop: "Detener escaneo",
+        },
+        fr: {
+        home: "Accueil",
+        scan: "Scanner le produit",
+        inventory: "Inventaire",
+        login: "Connexion",
+        signup: "S'inscrire",
+        scanHeader: "Scanner un produit",
+        waiting: "En attente du scan...",
+        start: "Démarrer le scan",
+        stop: "Arrêter le scan",
+        },
+    };
+
+  // Function to switch languages
+    function setLanguage(lang) {
+        document.querySelector('a[href="index.html"]').textContent = translations[lang].home;
+        document.querySelector('a[href="ScanProduct.html"]').textContent = translations[lang].scan;
+        document.querySelector('a[href="PersonalInventory.html"]').textContent = translations[lang].inventory;
+        document.querySelector('a[href="Login.html"]').textContent = translations[lang].login;
+        document.querySelector('a[href="SignUp.html"]').textContent = translations[lang].signup;
+        document.querySelector("h2").textContent = translations[lang].scanHeader;
+        document.getElementById("result").textContent = translations[lang].waiting;
+        document.getElementById("startButton").textContent = translations[lang].start;
+        document.getElementById("stopButton").textContent = translations[lang].stop;
+    }
+
+    // Event listeners for language buttons
+    document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
+    document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
+    document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
+</script>
 </body>
 </html>

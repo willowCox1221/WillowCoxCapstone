@@ -66,6 +66,70 @@ button {
 button:hover {
     background-color: #005ea0;
 }
+login-container {
+    max-width: 400px;
+    margin: 80px auto;
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 120, 215, 0.2);
+    text-align: left;
+}
+
+.login-container h2 {
+    text-align: center;
+    color: #0078d7;
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.login-container label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.login-container input {
+    width: 50%;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-container input:focus {
+    border-color: #0078d7;
+    box-shadow: 0 0 8px rgba(0, 120, 215, 0.3);
+    outline: none;
+}
+
+.login-container button[type="submit"] {
+    width: 50%;
+    background-color: #0078d7;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-container button[type="submit"]:hover {
+    background-color: #005ea0;
+}
+
+#message {
+    text-align: center;
+    margin-top: 15px;
+    color: #d9534f;
+    font-weight: bold;
+}
 
 /* Responsive Navigation (for mobile) */
 @media (max-width: 600px) {

@@ -9,38 +9,102 @@
 <body>
     <header>
         <nav class="navbar">
-
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="ScanProduct.html">Scan Product</a></li>
-                <li><a href="PersonalInventory.html">Inventory</a></li>
-                <li><a href="Login.html">Login</a></li>
-                <li><a href="SignUp.html">Sign Up</a></li>
-
+                <li><a id="nav-home" href="index.html">Home</a></li>
+                <li><a id="nav-scan" href="ScanProduct.html">Scan Product</a></li>
+                <li><a id="nav-inventory" href="PersonalInventory.html">Inventory</a></li>
+                <li><a id="nav-login" href="Login.html">Login</a></li>
+                <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
             </ul>
-            <button class="english">English</button>
-            <button class="spanish">Español</button>
-            <button class="french">Français</button>
+
+            <div class="language-buttons">
+                <button class="english">English</button>
+                <button class="spanish">Español</button>
+                <button class="french">Français</button>
+            </div>
         </nav>
     </header>
+
     <main class="login-container">
-        <h2>Login to Inventra</h2>
+        <h2 id="login-title">Login to Inventra</h2>
 
         <form id="loginForm">
-            <label for="username">Username</label>
+            <label id="username-label" for="username">Username</label>
             <input type="text" id="username" placeholder="Enter your username" required />
 
-            <label for="password">Password</label>
+            <label id="password-label" for="password">Password</label>
             <input type="password" id="password" placeholder="Enter your password" required />
 
-            <button type="submit">Login</button>
+            <button id="login-button" type="submit">Login</button>
         </form>
 
         <p id="message"></p>
     </main>
 
-    <script src="../Backend/Login.js"></script>
-</body>
-</html>
+    <script>
+    const translations = {
+        en: {
+            home: "Home",
+            scan: "Scan Product",
+            inventory: "Inventory",
+            login: "Login",
+            signup: "Sign Up",
+            loginTitle: "Login to Inventra",
+            username: "Username",
+            password: "Password",
+            usernamePlaceholder: "Enter your username",
+            passwordPlaceholder: "Enter your password",
+            loginButton: "Login",
+        },
+        es: {
+            home: "Inicio",
+            scan: "Escanear Producto",
+            inventory: "Inventario",
+            login: "Iniciar Sesión",
+            signup: "Registrarse",
+            loginTitle: "Inicia sesión en Inventra",
+            username: "Nombre de usuario",
+            password: "Contraseña",
+            usernamePlaceholder: "Introduce tu nombre de usuario",
+            passwordPlaceholder: "Introduce tu contraseña",
+            loginButton: "Entrar",
+        },
+        fr: {
+            home: "Accueil",
+            scan: "Scanner le produit",
+            inventory: "Inventaire",
+            login: "Connexion",
+            signup: "S'inscrire",
+            loginTitle: "Connectez-vous à Inventra",
+            username: "Nom d'utilisateur",
+            password: "Mot de passe",
+            usernamePlaceholder: "Entrez votre nom d'utilisateur",
+            passwordPlaceholder: "Entrez votre mot de passe",
+            loginButton: "Connexion",
+        },
+    };
+
+    function setLanguage(lang) {
+        document.getElementById("nav-home").textContent = translations[lang].home;
+        document.getElementById("nav-scan").textContent = translations[lang].scan;
+        document.getElementById("nav-inventory").textContent = translations[lang].inventory;
+        document.getElementById("nav-login").textContent = translations[lang].login;
+        document.getElementById("nav-signup").textContent = translations[lang].signup;
+
+        document.getElementById("login-title").textContent = translations[lang].loginTitle;
+        document.getElementById("username-label").textContent = translations[lang].username;
+        document.getElementById("password-label").textContent = translations[lang].password;
+        document.getElementById("username").placeholder = translations[lang].usernamePlaceholder;
+        document.getElementById("password").placeholder = translations[lang].passwordPlaceholder;
+        document.getElementById("login-button").textContent = translations[lang].loginButton;
+    }
+
+    // Button listeners
+    document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
+    document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
+    document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
+    </script>
+
+    <script src="../InventraBackend/Login.js"></script>
 </body>
 </html>

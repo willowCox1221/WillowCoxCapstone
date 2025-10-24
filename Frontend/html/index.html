@@ -11,17 +11,90 @@
         <nav class="navbar">
 
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="ScanProduct.html">Scan Product</a></li>
-                <li><a href="PersonalInventory.html">Inventory</a></li>
-                <li><a href="Login.html">Login</a></li>
-                <li><a href="SignUp.html">Sign Up</a></li>
+                <li><a id="nav-home" href="index.html">Home</a></li>
+                <li><a id="nav-scan" href="ScanProduct.html">Scan Product</a></li>
+                <li><a id="nav-inventory" href="PersonalInventory.html">Inventory</a></li>
+                <li><a id="nav-login" href="Login.html">Login</a></li>
+                <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
             </ul>
             <button class="english">English</button>
             <button class="spanish">Español</button>
             <button class="french">Français</button>
+
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search products..." />
+                <button id="search-button">Search</button>
+            </div>
         </nav>
     </header>
+
+    <main class="home-container">
+        <h1 id="welcome-title">Welcome to Inventra</h1>
+        <p id="welcome-text">Search your products or explore new items in your inventory.</p>
+        <div id="search-results"></div>
+    </main>
+
+    <script>
+    
+    const translations = {
+        en: {
+            home: "Home",
+            scan: "Scan Product",
+            inventory: "Inventory",
+            login: "Login",
+            signup: "Sign Up",
+            welcomeTitle: "Welcome to Inventra",
+            welcomeText: "Search your products or explore new items in your inventory.",
+            searchPlaceholder: "Search products...",
+            searchButton: "Search"
+        },
+        es: {
+            home: "Inicio",
+            scan: "Escanear Producto",
+            inventory: "Inventario",
+            login: "Iniciar Sesión",
+            signup: "Registrarse",
+            welcomeTitle: "Bienvenido a Inventra",
+            welcomeText: "Busca tus productos o explora nuevos artículos en tu inventario.",
+            searchPlaceholder: "Buscar productos...",
+            searchButton: "Buscar"
+        },
+        fr: {
+            home: "Accueil",
+            scan: "Scanner le Produit",
+            inventory: "Inventaire",
+            login: "Connexion",
+            signup: "S'inscrire",
+            welcomeTitle: "Bienvenue chez Inventra",
+            welcomeText: "Recherchez vos produits ou explorez de nouveaux articles dans votre inventaire.",
+            searchPlaceholder: "Rechercher des produits...",
+            searchButton: "Rechercher"
+        }
+    };
+
+    // 🌎 Language switching
+    document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
+    document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
+    document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
+
+    function setLanguage(lang) {
+        document.getElementById("nav-home").textContent = translations[lang].home;
+        document.getElementById("nav-scan").textContent = translations[lang].scan;
+        document.getElementById("nav-inventory").textContent = translations[lang].inventory;
+        document.getElementById("nav-login").textContent = translations[lang].login;
+        document.getElementById("nav-signup").textContent = translations[lang].signup;
+        document.getElementById("welcome-title").textContent = translations[lang].welcomeTitle;
+        document.getElementById("welcome-text").textContent = translations[lang].welcomeText;
+        document.getElementById("search-input").placeholder = translations[lang].searchPlaceholder;
+        document.getElementById("search-button").textContent = translations[lang].searchButton;
+    }
+
+    // 🔍 Example search feature (placeholder functionality)
+    document.getElementById("search-button").addEventListener("click", () => {
+        const query = document.getElementById("search-input").value;
+        document.getElementById("search-results").textContent = `You searched for: ${query}`;
+    });
+</script>
 
     
 </body>

@@ -42,69 +42,38 @@
     </main>
 
     <script>
-    const translations = {
-        en: {
-            home: "Home",
-            scan: "Scan Product",
-            inventory: "Inventory",
-            login: "Login",
-            signup: "Sign Up",
-            loginTitle: "Login to Inventra",
-            username: "Username",
-            password: "Password",
-            usernamePlaceholder: "Enter your username",
-            passwordPlaceholder: "Enter your password",
-            loginButton: "Login",
-        },
-        es: {
-            home: "Inicio",
-            scan: "Escanear Producto",
-            inventory: "Inventario",
-            login: "Iniciar Sesión",
-            signup: "Registrarse",
-            loginTitle: "Inicia sesión en Inventra",
-            username: "Nombre de usuario",
-            password: "Contraseña",
-            usernamePlaceholder: "Introduce tu nombre de usuario",
-            passwordPlaceholder: "Introduce tu contraseña",
-            loginButton: "Entrar",
-        },
-        fr: {
-            home: "Accueil",
-            scan: "Scanner le produit",
-            inventory: "Inventaire",
-            login: "Connexion",
-            signup: "S'inscrire",
-            loginTitle: "Connectez-vous à Inventra",
-            username: "Nom d'utilisateur",
-            password: "Mot de passe",
-            usernamePlaceholder: "Entrez votre nom d'utilisateur",
-            passwordPlaceholder: "Entrez votre mot de passe",
-            loginButton: "Connexion",
-        },
-    };
+    async function loadLanguage(lang) {
+    try {
+        const res = await fetch(`http://localhost:5000/preset?lang=${lang}`);
+        const data = await res.json();
 
-    function setLanguage(lang) {
-        document.getElementById("nav-home").textContent = translations[lang].home;
-        document.getElementById("nav-scan").textContent = translations[lang].scan;
-        document.getElementById("nav-inventory").textContent = translations[lang].inventory;
-        document.getElementById("nav-login").textContent = translations[lang].login;
-        document.getElementById("nav-signup").textContent = translations[lang].signup;
+        // Navbar
+        document.getElementById("nav-home").textContent = data.nav_home;
+        document.getElementById("nav-scan").textContent = data.nav_scan;
+        document.getElementById("nav-inventory").textContent = data.nav_inventory;
+        document.getElementById("nav-login").textContent = data.nav_login;
+        document.getElementById("nav-signup").textContent = data.nav_signup;
 
-        document.getElementById("login-title").textContent = translations[lang].loginTitle;
-        document.getElementById("username-label").textContent = translations[lang].username;
-        document.getElementById("password-label").textContent = translations[lang].password;
-        document.getElementById("username").placeholder = translations[lang].usernamePlaceholder;
-        document.getElementById("password").placeholder = translations[lang].passwordPlaceholder;
-        document.getElementById("login-button").textContent = translations[lang].loginButton;
+        // Login Page
+        if (document.getElementById("login-title")) {
+        document.getElementById("login-title").textContent = data.login_title;
+        document.getElementById("username-label").textContent = data.username_label;
+        document.getElementById("password-label").textContent = data.password_label;
+        document.getElementById("username").placeholder = data.username_placeholder;
+        document.getElementById("password").placeholder = data.password_placeholder;
+        document.getElementById("login-button").textContent = data.login_button;
+        }
+    } catch (err) {
+        console.error("Translation load failed:", err);
     }
+}
 
-    
-    document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
-    document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
-    document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
-    </script>
+document.querySelector(".english").addEventListener("click", () => loadLanguage("en"));
+document.querySelector(".spanish").addEventListener("click", () => loadLanguage("es"));
+document.querySelector(".french").addEventListener("click", () => loadLanguage("fr"));
+</script>
 
     <script src="../InventraBackend/Login.js"></script>
+    <script src="../../inventraTranslationAPI/translation.js"></script>
 </body>
 </html>

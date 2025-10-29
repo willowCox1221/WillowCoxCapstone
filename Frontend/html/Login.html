@@ -63,10 +63,19 @@
         document.getElementById("password").placeholder = data.password_placeholder;
         document.getElementById("login-button").textContent = data.login_button;
         }
-    } catch (err) {
-        console.error("Translation load failed:", err);
-    }
+    // Remember selected language
+            localStorage.setItem("language", lang);
+                } catch (err) {
+            console.error("Translation load failed:", err);
+                }
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+        const savedLang = localStorage.getItem("language") || "en";
+        loadLanguage(savedLang);
+    });
+
+
 
 document.querySelector(".english").addEventListener("click", () => loadLanguage("en"));
 document.querySelector(".spanish").addEventListener("click", () => loadLanguage("es"));

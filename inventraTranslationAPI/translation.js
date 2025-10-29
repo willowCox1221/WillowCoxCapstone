@@ -22,7 +22,7 @@ app.post("/translate", async (req, res) => {
                 q: text,
                 source: "en",
                 target,
-                format: "text"
+                format: "text",
             }),
         });
 
@@ -52,10 +52,14 @@ const translations = {
         password_placeholder: "Enter your password",
         login_button: "Login",
 
-    // Sign Up Page
+        // Sign Up Page
         signup_title: "Sign Up with Inventra",
         email_label: "Email",
         email_placeholder: "Enter your email",
+        username_label: "Username",
+        username_placeholder: "Enter your username",
+        password_label: "Password",
+        password_placeholder: "Enter your password",
         signup_button: "Sign Up",
     },
     es: {
@@ -75,8 +79,12 @@ const translations = {
         signup_title: "Regístrate en Inventra",
         email_label: "Correo electrónico",
         email_placeholder: "Introduce tu correo electrónico",
+        username_label: "Nombre de usuario",
+        username_placeholder: "Introduce tu nombre de usuario",
+        password_label: "Contraseña",
+        password_placeholder: "Introduce tu contraseña",
         signup_button: "Registrarse",
-        },
+    },
     fr: {
         nav_home: "Accueil",
         nav_scan: "Scanner le produit",
@@ -94,8 +102,12 @@ const translations = {
         signup_title: "Inscrivez-vous à Inventra",
         email_label: "Email",
         email_placeholder: "Entrez votre adresse email",
+        username_label: "Nom d'utilisateur",
+        username_placeholder: "Entrez votre nom d'utilisateur",
+        password_label: "Mot de passe",
+        password_placeholder: "Entrez votre mot de passe",
         signup_button: "S'inscrire",
-        },
+    },
 };
 
 // 🌍 Hardcoded UI translation endpoint

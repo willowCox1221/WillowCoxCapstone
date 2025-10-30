@@ -15,7 +15,9 @@ header {
     z-index: 10;
 }
 
-
+main {
+  padding-top: 140px; /* ensures content isn't hidden behind fixed navbar */
+}
 /* Navbar */
 .navbar {
     background-color: #0078d7;

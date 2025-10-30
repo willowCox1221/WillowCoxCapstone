@@ -44,6 +44,12 @@ const translations = {
         nav_login: "Login",
         nav_signup: "Sign Up",
 
+        // 🏠 Home Page
+        welcome_title: "Welcome to Inventra",
+        welcome_text: "Search your products or explore new items in your inventory.",
+        search_placeholder: "Search products...",
+        search_button: "Search",
+
         // Login Page
         login_title: "Login to Inventra",
         username_label: "Username",
@@ -61,12 +67,6 @@ const translations = {
         password_label: "Password",
         password_placeholder: "Enter your password",
         signup_button: "Sign Up",
-
-        // Home Page
-        home_title: "Welcome to Inventra",
-        home_text: "Search your products or explore new items in your inventory.",
-        search_placeholder: "Search products...",
-        search_button: "Search",
     },
     es: {
         nav_home: "Inicio",
@@ -74,6 +74,12 @@ const translations = {
         nav_inventory: "Inventario",
         nav_login: "Iniciar Sesión",
         nav_signup: "Registrarse",
+
+        // 🏠 Home Page
+        welcome_title: "Bienvenido a Inventra",
+        welcome_text: "Busca tus productos o explora nuevos artículos en tu inventario.",
+        search_placeholder: "Buscar productos...",
+        search_button: "Buscar",
 
         login_title: "Inicia sesión en Inventra",
         username_label: "Nombre de usuario",
@@ -90,11 +96,6 @@ const translations = {
         password_label: "Contraseña",
         password_placeholder: "Introduce tu contraseña",
         signup_button: "Registrarse",
-
-        home_title: "Bienvenido a Inventra",
-        home_text: "Busca tus productos o explora nuevos artículos en tu inventario.",
-        search_placeholder: "Buscar productos...",
-        search_button: "Buscar",
     },
     fr: {
         nav_home: "Accueil",
@@ -102,6 +103,12 @@ const translations = {
         nav_inventory: "Inventaire",
         nav_login: "Connexion",
         nav_signup: "S'inscrire",
+
+        // 🏠 Home Page
+        welcome_title: "Bienvenue sur Inventra",
+        welcome_text: "Recherchez vos produits ou explorez de nouveaux articles dans votre inventaire.",
+        search_placeholder: "Rechercher des produits...",
+        search_button: "Rechercher",
 
         login_title: "Connectez-vous à Inventra",
         username_label: "Nom d'utilisateur",
@@ -118,11 +125,6 @@ const translations = {
         password_label: "Mot de passe",
         password_placeholder: "Entrez votre mot de passe",
         signup_button: "S'inscrire",
-
-        home_title: "Bienvenue sur Inventra",
-        home_text: "Recherchez vos produits ou explorez de nouveaux articles dans votre inventaire.",
-        search_placeholder: "Rechercher des produits...",
-        search_button: "Rechercher",
     },
 };
 

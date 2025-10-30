@@ -61,6 +61,12 @@ const translations = {
         password_label: "Password",
         password_placeholder: "Enter your password",
         signup_button: "Sign Up",
+
+        // Home Page
+        home_title: "Welcome to Inventra",
+        home_text: "Search your products or explore new items in your inventory.",
+        search_placeholder: "Search products...",
+        search_button: "Search",
     },
     es: {
         nav_home: "Inicio",
@@ -84,6 +90,11 @@ const translations = {
         password_label: "Contraseña",
         password_placeholder: "Introduce tu contraseña",
         signup_button: "Registrarse",
+
+        home_title: "Bienvenido a Inventra",
+        home_text: "Busca tus productos o explora nuevos artículos en tu inventario.",
+        search_placeholder: "Buscar productos...",
+        search_button: "Buscar",
     },
     fr: {
         nav_home: "Accueil",
@@ -107,6 +118,11 @@ const translations = {
         password_label: "Mot de passe",
         password_placeholder: "Entrez votre mot de passe",
         signup_button: "S'inscrire",
+
+        home_title: "Bienvenue sur Inventra",
+        home_text: "Recherchez vos produits ou explorez de nouveaux articles dans votre inventaire.",
+        search_placeholder: "Rechercher des produits...",
+        search_button: "Rechercher",
     },
 };
 

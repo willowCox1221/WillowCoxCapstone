@@ -9,7 +9,6 @@
 <body>
     <header>
         <nav class="navbar">
-
             <ul class="nav-links">
                 <li><a id="nav-home" href="index.html">Home</a></li>
                 <li><a id="nav-scan" href="ScanProduct.html">Scan Product</a></li>
@@ -17,6 +16,7 @@
                 <li><a id="nav-login" href="Login.html">Login</a></li>
                 <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
             </ul>
+
             <button class="english">English</button>
             <button class="spanish">Español</button>
             <button class="french">Français</button>
@@ -28,38 +28,46 @@
         </nav>
     </header>
 
-    <main class="home-container">
-        <h1 id="welcome-title">Welcome to Inventra</h1>
-        <p id="welcome-text">Search your products or explore new items in your inventory.</p>
-        <div id="search-results"></div>
-    </main>
 
-    
 <script>
-const API_URL = "http://localhost:5000/preset"; // your local API
+const API_URL = "http://localhost:5000/preset";
 
+// 🌍 Function to update text dynamically
 async function setLanguage(lang) {
     try {
         const response = await fetch(`${API_URL}?lang=${lang}`);
-        const translations = await response.json();
+        const t = await response.json();
 
-        // Update text on your page
-        document.getElementById("welcome-title").textContent = translations.welcomeTitle;
-        document.getElementById("welcome-text").textContent = translations.welcomeText;
-        document.getElementById("search-input").placeholder = translations.searchPlaceholder;
-        document.getElementById("search-button").textContent = translations.searchButton;
+        // Navbar
+        document.getElementById("nav-home").textContent = t.nav_home;
+        document.getElementById("nav-scan").textContent = t.nav_scan;
+        document.getElementById("nav-inventory").textContent = t.nav_inventory;
+        document.getElementById("nav-login").textContent = t.nav_login;
+        document.getElementById("nav-signup").textContent = t.nav_signup;
 
+        // Home Page Text
+        document.getElementById("welcome-title").textContent = t.welcome_title;
+        document.getElementById("welcome-text").textContent = t.welcome_text;
+        document.getElementById("search-input").placeholder = t.search_placeholder;
+        document.getElementById("search-button").textContent = t.search_button;
+
+        // Save selected language
+        localStorage.setItem("language", lang);
     } catch (err) {
         console.error("Error loading translations:", err);
     }
 }
 
-// Attach event listeners for buttons
+// 🗂 Apply saved language on load
+window.addEventListener("DOMContentLoaded", () => {
+    const savedLang = localStorage.getItem("language") || "en";
+    setLanguage(savedLang);
+});
+
+// 🌐 Language Switch Buttons
 document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
 document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
 document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
 </script>
-
-    
 </body>
 </html>

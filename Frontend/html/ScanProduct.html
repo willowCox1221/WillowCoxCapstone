@@ -3,92 +3,79 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inventra</title>
+    <title>Inventra - Scan Product</title>
     <link rel="stylesheet" href="../css/styling.css" />
 </head>
 <body>
     <header>
         <nav class="navbar">
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="ScanProduct.html">Scan Product</a></li>
-                <li><a href="PersonalInventory.html">Inventory</a></li>
-                <li><a href="Login.html">Login</a></li>
-                <li><a href="SignUp.html">Sign Up</a></li>
+                <li><a id="nav-home" href="index.html">Home</a></li>
+                <li><a id="nav-scan" href="ScanProduct.html">Scan Product</a></li>
+                <li><a id="nav-inventory" href="PersonalInventory.html">Inventory</a></li>
+                <li><a id="nav-login" href="Login.html">Login</a></li>
+                <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
             </ul>
+
             <button class="english">English</button>
             <button class="spanish">Español</button>
             <button class="french">Français</button>
         </nav>
     </header>
 
-    <main>
-        <h2>Scan a Product</h2>
+    <main class="scan-container">
+        <h2 id="scan-header">Scan a Product</h2>
         <video id="camera" autoplay playsinline width="300" height="200" style="border: 1px solid #ccc;"></video>
         <p id="result">Waiting for scan...</p>
         <button id="startButton">Start Scanning</button>
         <button id="stopButton">Stop Scanning</button>
-        
     </main>
 
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script src="../Javascript/CameraScanner.js"></script>
-    
-    <script>
-    const translations = {
-        en: {
-        home: "Home",
-        scan: "Scan Product",
-        inventory: "Inventory",
-        login: "Login",
-        signup: "Sign Up",
-        scanHeader: "Scan a Product",
-        waiting: "Waiting for scan...",
-        start: "Start Scanning",
-        stop: "Stop Scanning",
-        },
-        es: {
-        home: "Inicio",
-        scan: "Escanear Producto",
-        inventory: "Inventario",
-        login: "Iniciar Sesión",
-        signup: "Registrarse",
-        scanHeader: "Escanea un producto",
-        waiting: "Esperando escaneo...",
-        start: "Comenzar escaneo",
-        stop: "Detener escaneo",
-        },
-        fr: {
-        home: "Accueil",
-        scan: "Scanner le produit",
-        inventory: "Inventaire",
-        login: "Connexion",
-        signup: "S'inscrire",
-        scanHeader: "Scanner un produit",
-        waiting: "En attente du scan...",
-        start: "Démarrer le scan",
-        stop: "Arrêter le scan",
-        },
-    };
 
-  // Function to switch languages
-    function setLanguage(lang) {
-        document.querySelector('a[href="index.html"]').textContent = translations[lang].home;
-        document.querySelector('a[href="ScanProduct.html"]').textContent = translations[lang].scan;
-        document.querySelector('a[href="PersonalInventory.html"]').textContent = translations[lang].inventory;
-        document.querySelector('a[href="Login.html"]').textContent = translations[lang].login;
-        document.querySelector('a[href="SignUp.html"]').textContent = translations[lang].signup;
-        document.querySelector("h2").textContent = translations[lang].scanHeader;
-        document.getElementById("result").textContent = translations[lang].waiting;
-        document.getElementById("startButton").textContent = translations[lang].start;
-        document.getElementById("stopButton").textContent = translations[lang].stop;
+    <script>
+    const API_URL = "http://localhost:5000/preset";
+
+    // 🌍 Apply translations dynamically
+    async function setLanguage(lang) {
+        try {
+            const response = await fetch(`${API_URL}?lang=${lang}`);
+            const t = await response.json();
+
+            // Navbar
+            document.getElementById("nav-home").textContent = t.nav_home;
+            document.getElementById("nav-scan").textContent = t.nav_scan;
+            document.getElementById("nav-inventory").textContent = t.nav_inventory;
+            document.getElementById("nav-login").textContent = t.nav_login;
+            document.getElementById("nav-signup").textContent = t.nav_signup;
+
+            // Scan Page Text
+            document.getElementById("scan-header").textContent = t.scan_header || "Scan a Product";
+            document.getElementById("result").textContent = t.scan_waiting || "Waiting for scan...";
+            document.getElementById("startButton").textContent = t.scan_start || "Start Scanning";
+            document.getElementById("stopButton").textContent = t.scan_stop || "Stop Scanning";
+            
+
+            // Save selection
+            localStorage.setItem("language", lang);
+        } catch (error) {
+            console.error("Translation error:", error);
+        }
     }
 
-    // Event listeners for language buttons
+    // 🗂 Restore saved language when loading page
+    window.addEventListener("DOMContentLoaded", () => {
+        const savedLang = localStorage.getItem("language") || "en";
+        setLanguage(savedLang);
+    });
+
+    // 🌐 Language Switch Buttons
     document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
     document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
     document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
-</script>
-<script src="../../inventraTranslationAPI/translation.js"></script>
+    </script>
+
+    <script src="../../inventraTranslationAPI/translation.js"></script>
 </body>
 </html>

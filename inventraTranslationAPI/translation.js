@@ -67,6 +67,16 @@ const translations = {
         password_label: "Password",
         password_placeholder: "Enter your password",
         signup_button: "Sign Up",
+
+        // Scan Page
+        scan_header: "Scan a Product",
+        scan_waiting: "Waiting for scan...",
+        scan_start: "Start Scanning",
+        scan_stop: "Stop Scanning",
+        scan_starting: "Starting camera...",
+        scan_stopping: "Scanning stopped.",
+        scan_running: "Scanning already running!",
+        // Inventory Page
     },
     es: {
         nav_home: "Inicio",
@@ -96,6 +106,16 @@ const translations = {
         password_label: "Contraseña",
         password_placeholder: "Introduce tu contraseña",
         signup_button: "Registrarse",
+
+        // Scan Page
+        scan_header: "Escanea un Producto",
+        scan_waiting: "Esperando escaneo...",
+        scan_start: "Comenzar Escaneo",
+        scan_stop: "Detener Escaneo",
+        scan_starting: "Iniciando cámara...",
+        scan_stopping: "Escaneo detenido.",
+        scan_running: "¡El escaneo ya está en curso!",
+        // Inventory Page
     },
     fr: {
         nav_home: "Accueil",
@@ -125,6 +145,16 @@ const translations = {
         password_label: "Mot de passe",
         password_placeholder: "Entrez votre mot de passe",
         signup_button: "S'inscrire",
+
+        // Scan Page
+        scan_header: "Scanner un produit",
+        scan_waiting: "En attente du scan...",
+        scan_start: "Démarrer le scan",
+        scan_stop: "Arrêter le scan",
+        scan_starting: "Démarrage de la caméra...",
+        scan_stopping: "Scan arrêté.",
+        scan_running: "Le scan est déjà en cours!",
+        // Inventory Page
     },
 };
 

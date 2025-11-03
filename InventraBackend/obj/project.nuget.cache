@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "PG0BvgDD6Ls=",
+  "dgSpecHash": "UXEgIXWnDME=",
   "success": true,
   "projectFilePath": "C:\\Users\\Willow Cox\\WillowCoxCapstone\\InventraBackend\\InventraBackend.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Willow Cox\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Willow Cox\\.nuget\\packages\\bouncycastle.cryptography\\2.6.2\\bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "C:\\Users\\Willow Cox\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\Willow Cox\\.nuget\\packages\\google.protobuf\\3.32.0\\google.protobuf.3.32.0.nupkg.sha512",

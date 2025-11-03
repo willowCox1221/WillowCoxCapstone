@@ -1,37 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
-using InventraBackend.Models;
 
 namespace InventraBackend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class SignupController : ControllerBase
     {
-        private readonly IConfiguration _config;
-
-        public SignupController(IConfiguration config)
-        {
-            _config = config;
-        }
+        private readonly string _connectionString = "server=localhost;user=root;password=Test;database=inventra;";
 
         [HttpPost]
-        public IActionResult Register([FromForm] string username, [FromForm] string email, [FromForm] string password)
+        public IActionResult SignUp([FromForm] string email, [FromForm] string username, [FromForm] string password)
         {
             try
             {
-                string connStr = _config.GetConnectionString("DefaultConnection")!;
-                using var conn = new MySqlConnection(connStr);
+                using var conn = new MySqlConnection(_connectionString);
                 conn.Open();
 
-                string query = "INSERT INTO users (username, email, password) VALUES (@username, @email, @password)";
+                string query = "INSERT INTO users (email, username, password) VALUES (@Email, @Username, @Password)";
                 using var cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@username", username);
-                cmd.Parameters.AddWithValue("@email", email);
-                cmd.Parameters.AddWithValue("@password", password); // Hash this in production!
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@Username", username);
+                cmd.Parameters.AddWithValue("@Password", password);
                 cmd.ExecuteNonQuery();
 
-                return Ok(new { message = "Signup successful!" });
+                return Ok(new { message = "User registered successfully!" });
             }
             catch (Exception ex)
             {

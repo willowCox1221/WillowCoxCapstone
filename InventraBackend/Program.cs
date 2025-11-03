@@ -1,8 +1,6 @@
-
 using InventraBackend.Services;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +9,15 @@ builder.Services.AddSingleton<InventoryService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ✅ Add CORS setup before building the app
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+        builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
+});
 
 var app = builder.Build();
 
@@ -22,6 +29,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ✅ Apply CORS policy here (after building, before controllers)
+app.UseCors("AllowAll");
 
 app.MapControllers();
 

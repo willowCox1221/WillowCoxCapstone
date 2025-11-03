@@ -10,12 +10,12 @@ namespace InventraBackend.Controllers
     public class SignupController : ControllerBase
     {
         private readonly EmailService _emailService;
-        private readonly MySqlConnection _connection;
+        private readonly string _connectionString;
 
         public SignupController(IConfiguration config, EmailService emailService)
         {
             _emailService = emailService;
-            _connection = new MySqlConnection(config.GetConnectionString("DefaultConnection"));
+            _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
         // Generate a secure random verification token
@@ -29,25 +29,37 @@ namespace InventraBackend.Controllers
         public async Task<IActionResult> Signup([FromForm] string email, [FromForm] string username, [FromForm] string password)
         {
             var token = GenerateVerificationToken();
+            var tokenExpires = DateTime.UtcNow.AddHours(24);
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
             try
             {
-                await _connection.OpenAsync();
+                await using var connection = new MySqlConnection(_connectionString);
+                await connection.OpenAsync();
+
+                // Check if email already exists
+                var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE email = @e", connection);
+                checkCmd.Parameters.AddWithValue("@e", email);
+                var count = Convert.ToInt32(await checkCmd.ExecuteScalarAsync());
+                if (count > 0)
+                    return BadRequest("Email already registered.");
 
                 var cmd = new MySqlCommand(@"
-                    INSERT INTO users (email, username, password, VerificationToken, IsVerified)
-                    VALUES (@e, @u, @p, @t, FALSE);
-                ", _connection);
+                    INSERT INTO users (email, username, password, VerificationToken, TokenExpires, IsVerified)
+                    VALUES (@e, @u, @p, @t, @x, FALSE);
+                ", connection);
 
                 cmd.Parameters.AddWithValue("@e", email);
                 cmd.Parameters.AddWithValue("@u", username);
-                cmd.Parameters.AddWithValue("@p", password); // ⚠️ You should hash this later!
+                cmd.Parameters.AddWithValue("@p", hashedPassword);
                 cmd.Parameters.AddWithValue("@t", token);
+                cmd.Parameters.AddWithValue("@x", tokenExpires);
 
                 await cmd.ExecuteNonQueryAsync();
 
-                // Send email verification
-                await _emailService.SendVerificationEmailAsync(email, token);
+                // Send verification email
+                var verifyUrl = $"https://yourdomain.com/api/signup/verify?token={Uri.EscapeDataString(token)}";
+                await _emailService.SendVerificationEmailAsync(email, verifyUrl);
 
                 return Ok(new
                 {
@@ -58,40 +70,53 @@ namespace InventraBackend.Controllers
             {
                 return StatusCode(500, new { error = $"Signup failed: {ex.Message}" });
             }
-            finally
-            {
-                await _connection.CloseAsync();
-            }
         }
 
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest("Invalid token.");
+
             try
             {
-                await _connection.OpenAsync();
+                await using var connection = new MySqlConnection(_connectionString);
+                await connection.OpenAsync();
 
-                var cmd = new MySqlCommand(@"
-                    UPDATE users 
-                    SET IsVerified = TRUE 
+                // Validate token
+                var selectCmd = new MySqlCommand(@"
+                    SELECT email, TokenExpires 
+                    FROM users 
                     WHERE VerificationToken = @t AND IsVerified = FALSE;
-                ", _connection);
+                ", connection);
+                selectCmd.Parameters.AddWithValue("@t", token);
 
-                cmd.Parameters.AddWithValue("@t", token);
-                int rows = await cmd.ExecuteNonQueryAsync();
+                using var reader = await selectCmd.ExecuteReaderAsync();
+                if (!await reader.ReadAsync())
+                    return BadRequest("Invalid or already verified token.");
 
-                if (rows > 0)
-                    return Ok("✅ Email verified successfully!");
-                else
-                    return BadRequest("❌ Invalid or already verified token.");
+                var expiry = reader.GetDateTime(reader.GetOrdinal("TokenExpires"));
+                var email = reader.GetString(reader.GetOrdinal("email"));
+                await reader.CloseAsync();
+
+                if (expiry < DateTime.UtcNow)
+                    return BadRequest("Verification link has expired.");
+
+                // Mark verified
+                var updateCmd = new MySqlCommand(@"
+                    UPDATE users 
+                    SET IsVerified = TRUE, VerificationToken = NULL, TokenExpires = NULL 
+                    WHERE email = @e;
+                ", connection);
+                updateCmd.Parameters.AddWithValue("@e", email);
+
+                await updateCmd.ExecuteNonQueryAsync();
+
+                return Ok("✅ Email verified successfully! You can now log in.");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = $"Verification failed: {ex.Message}" });
-            }
-            finally
-            {
-                await _connection.CloseAsync();
             }
         }
     }

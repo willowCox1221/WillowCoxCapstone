@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
 
 // Add services
 builder.Services.AddSingleton<InventoryService>();
-builder.Services.AddSingleton<EmailService>();
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

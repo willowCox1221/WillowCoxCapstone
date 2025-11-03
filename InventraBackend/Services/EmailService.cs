@@ -19,7 +19,7 @@ namespace InventraBackend.Services
             message.To.Add(new MailboxAddress("", toEmail));
             message.Subject = "Verify your Inventra account";
 
-            string verifyUrl = $"https://localhost:5001/api/verify?token={token}";
+            string verifyUrl = $"https://localhost:5001/api/signup/verify?token={token}";
 
             message.Body = new TextPart("html")
             {

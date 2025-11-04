@@ -58,7 +58,7 @@ namespace InventraBackend.Controllers
                 await cmd.ExecuteNonQueryAsync();
 
                 // Send verification email
-                var verifyUrl = $"https://yourdomain.com/api/signup/verify?token={Uri.EscapeDataString(token)}";
+                var verifyUrl = $"https://localhost:5000/api/auth/verify?token={token}";
                 await _emailService.SendVerificationEmailAsync(email, verifyUrl);
 
                 return Ok(new

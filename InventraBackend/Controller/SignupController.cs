@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using InventraBackend.Services;
+using InventraBackend.Models;
 using System.Security.Cryptography;
 
 namespace InventraBackend.Controllers
@@ -25,12 +26,21 @@ namespace InventraBackend.Controllers
             return Convert.ToBase64String(tokenBytes);
         }
 
+        // ✅ Updated to use [FromBody] model binding for JSON
         [HttpPost]
-        public async Task<IActionResult> Signup([FromForm] string email, [FromForm] string username, [FromForm] string password)
+        public async Task<IActionResult> Signup([FromBody] SignupRequest request)
         {
+            if (request == null ||
+                string.IsNullOrWhiteSpace(request.Email) ||
+                string.IsNullOrWhiteSpace(request.Username) ||
+                string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest("All fields are required.");
+            }
+
             var token = GenerateVerificationToken();
             var tokenExpires = DateTime.UtcNow.AddHours(24);
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             try
             {
@@ -39,7 +49,7 @@ namespace InventraBackend.Controllers
 
                 // Check if email already exists
                 var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE email = @e", connection);
-                checkCmd.Parameters.AddWithValue("@e", email);
+                checkCmd.Parameters.AddWithValue("@e", request.Email);
                 var count = Convert.ToInt32(await checkCmd.ExecuteScalarAsync());
                 if (count > 0)
                     return BadRequest("Email already registered.");
@@ -49,8 +59,8 @@ namespace InventraBackend.Controllers
                     VALUES (@e, @u, @p, @t, @x, FALSE);
                 ", connection);
 
-                cmd.Parameters.AddWithValue("@e", email);
-                cmd.Parameters.AddWithValue("@u", username);
+                cmd.Parameters.AddWithValue("@e", request.Email);
+                cmd.Parameters.AddWithValue("@u", request.Username);
                 cmd.Parameters.AddWithValue("@p", hashedPassword);
                 cmd.Parameters.AddWithValue("@t", token);
                 cmd.Parameters.AddWithValue("@x", tokenExpires);
@@ -59,7 +69,7 @@ namespace InventraBackend.Controllers
 
                 // Send verification email
                 var verifyUrl = $"http://localhost:5000/api/signup/verify?token={token}";
-                await _emailService.SendVerificationEmailAsync(email, verifyUrl);
+                await _emailService.SendVerificationEmailAsync(request.Email, verifyUrl);
 
                 return Ok(new
                 {

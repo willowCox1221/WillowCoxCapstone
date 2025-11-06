@@ -25,8 +25,7 @@ namespace InventraBackend.Controllers
             var tokenBytes = RandomNumberGenerator.GetBytes(32);
             return Convert.ToBase64String(tokenBytes);
         }
-
-        // ✅ Updated to use [FromBody] model binding for JSON
+/////////////////////////////Signup Method Added Below////////////////////////////
         [HttpPost]
         public async Task<IActionResult> Signup([FromBody] SignupRequest request)
         {
@@ -47,13 +46,21 @@ namespace InventraBackend.Controllers
                 await using var connection = new MySqlConnection(_connectionString);
                 await connection.OpenAsync();
 
-                // Check if email already exists
-                var checkCmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE email = @e", connection);
-                checkCmd.Parameters.AddWithValue("@e", request.Email);
-                var count = Convert.ToInt32(await checkCmd.ExecuteScalarAsync());
-                if (count > 0)
+                // ✅ Check if email already exists
+                var emailCheckCmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE email = @e", connection);
+                emailCheckCmd.Parameters.AddWithValue("@e", request.Email);
+                var emailCount = Convert.ToInt32(await emailCheckCmd.ExecuteScalarAsync());
+                if (emailCount > 0)
                     return BadRequest("Email already registered.");
 
+                // ✅ Check if username already exists
+                var usernameCheckCmd = new MySqlCommand("SELECT COUNT(*) FROM users WHERE username = @u", connection);
+                usernameCheckCmd.Parameters.AddWithValue("@u", request.Username);
+                var usernameCount = Convert.ToInt32(await usernameCheckCmd.ExecuteScalarAsync());
+                if (usernameCount > 0)
+                    return BadRequest("Username already taken.");
+
+                // ✅ Insert new user
                 var cmd = new MySqlCommand(@"
                     INSERT INTO users (email, username, password, VerificationToken, TokenExpires, IsVerified)
                     VALUES (@e, @u, @p, @t, @x, FALSE);
@@ -67,8 +74,7 @@ namespace InventraBackend.Controllers
 
                 await cmd.ExecuteNonQueryAsync();
 
-                // Send verification email
-                // var verifyUrl = $"https://localhost:5001/api/signup/verify?token={token}";
+                // ✅ Send verification email
                 await _emailService.SendVerificationEmailAsync(request.Email, token);
 
                 return Ok(new
@@ -81,7 +87,7 @@ namespace InventraBackend.Controllers
                 return StatusCode(500, new { error = $"Signup failed: {ex.Message}" });
             }
         }
-
+////////////////////////////Email Verification Method Added Below////////////////////////////
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
@@ -127,6 +133,55 @@ namespace InventraBackend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { error = $"Verification failed: {ex.Message}" });
+            }
+        }
+////////////////////////////Login Method Added Below////////////////////////////
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            if (request == null ||
+                string.IsNullOrWhiteSpace(request.Username) ||
+                string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest("Username and password are required.");
+            }
+
+            try
+            {
+                await using var connection = new MySqlConnection(_connectionString);
+                await connection.OpenAsync();
+
+                var cmd = new MySqlCommand(@"
+                    SELECT username, password, IsVerified
+                    FROM users
+                    WHERE username = @u;
+                ", connection);
+                cmd.Parameters.AddWithValue("@u", request.Username);
+
+                using var reader = await cmd.ExecuteReaderAsync();
+                if (!await reader.ReadAsync())
+                    return Unauthorized("Invalid username or password.");
+
+                string hashedPassword = reader.GetString(reader.GetOrdinal("password"));
+                bool isVerified = reader.GetBoolean(reader.GetOrdinal("IsVerified"));
+
+                if (!isVerified)
+                    return Unauthorized("Please verify your email before logging in.");
+
+                // Compare passwords
+                bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword);
+                if (!isPasswordValid)
+                    return Unauthorized("Invalid username or password.");
+
+                return Ok(new
+                {
+                    message = "Login successful!",
+                    username = request.Username
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = $"Login failed: {ex.Message}" });
             }
         }
     }

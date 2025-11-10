@@ -15,6 +15,16 @@
                 <li><a id="nav-inventory" href="PersonalInventory.html">Inventory</a></li>
                 <li><a id="nav-login" href="Login.html">Login</a></li>
                 <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
+
+                <div class="profile-menu">
+                    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" 
+                        alt="Profile" class="profile-icon" id="profileIcon">
+
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="/profile.html">View Profile</a>
+                        <a href="#" id="signOut">Sign Out</a>
+                    </div>
+                </div>
             </ul>
 
             <button class="english">English</button>
@@ -71,6 +81,28 @@ window.addEventListener("DOMContentLoaded", () => {
 document.querySelector(".english").addEventListener("click", () => setLanguage("en"));
 document.querySelector(".spanish").addEventListener("click", () => setLanguage("es"));
 document.querySelector(".french").addEventListener("click", () => setLanguage("fr"));
+</script>
+
+<script>
+const icon = document.getElementById("profileIcon");
+const menu = document.getElementById("dropdownMenu");
+
+icon.addEventListener("click", () => {
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+});
+
+// Hide menu when clicking outside
+document.addEventListener("click", (e) => {
+    if (!icon.contains(e.target) && !menu.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
+
+// Handle sign out
+document.getElementById("signOut").addEventListener("click", () => {
+    localStorage.removeItem("authToken"); // or session info
+    window.location.href = "/login.html";
+});
 </script>
 </body>
 </html>

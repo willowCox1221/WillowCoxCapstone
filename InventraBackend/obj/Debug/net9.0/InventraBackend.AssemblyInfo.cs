@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InventraBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49be1f769ad2cba26a290cfd1da58bc8e91473f1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+04287e32b74b3baa25a128d6e4a63d58b3f2f332")]
 [assembly: System.Reflection.AssemblyProductAttribute("InventraBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InventraBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

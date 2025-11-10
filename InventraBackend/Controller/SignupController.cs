@@ -25,7 +25,7 @@ namespace InventraBackend.Controllers
             var tokenBytes = RandomNumberGenerator.GetBytes(32);
             return Convert.ToBase64String(tokenBytes);
         }
-/////////////////////////////Signup Method Added Below////////////////////////////
+        /////////////////////////////Signup Method Added Below////////////////////////////
         [HttpPost]
         public async Task<IActionResult> Signup([FromBody] SignupRequest request)
         {
@@ -87,7 +87,7 @@ namespace InventraBackend.Controllers
                 return StatusCode(500, new { error = $"Signup failed: {ex.Message}" });
             }
         }
-////////////////////////////Email Verification Method Added Below////////////////////////////
+        ////////////////////////////Email Verification Method Added Below////////////////////////////
         [HttpGet("verify")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
@@ -135,7 +135,7 @@ namespace InventraBackend.Controllers
                 return StatusCode(500, new { error = $"Verification failed: {ex.Message}" });
             }
         }
-////////////////////////////Login Method Added Below////////////////////////////
+        ////////////////////////////Login Method Added Below////////////////////////////
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
@@ -152,10 +152,10 @@ namespace InventraBackend.Controllers
                 await connection.OpenAsync();
 
                 var cmd = new MySqlCommand(@"
-                    SELECT username, password, IsVerified
-                    FROM users
-                    WHERE username = @u;
-                ", connection);
+            SELECT username, password, IsVerified
+            FROM users
+            WHERE username = @u;
+        ", connection);
                 cmd.Parameters.AddWithValue("@u", request.Username);
 
                 using var reader = await cmd.ExecuteReaderAsync();
@@ -168,11 +168,11 @@ namespace InventraBackend.Controllers
                 if (!isVerified)
                     return Unauthorized("Please verify your email before logging in.");
 
-                // Compare passwords
                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword);
                 if (!isPasswordValid)
                     return Unauthorized("Invalid username or password.");
 
+                // ✅ If it reaches here, login is successful
                 return Ok(new
                 {
                     message = "Login successful!",
@@ -181,8 +181,43 @@ namespace InventraBackend.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { error = $"Login failed: {ex.Message}" });
+                // ✅ Catch any DB or runtime errors
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+    
+//////////////////////////////Logout Method Added Below////////////////////////////
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return Ok(new { message = "Logged out successfully." });
+        }
+                
+//////////////////////////////Get Profile Method Added Below////////////////////////////
+        [HttpGet("me")]
+        public async Task<IActionResult> GetProfile()
+        {
+            var username = HttpContext.User.Identity?.Name;
+            if (string.IsNullOrEmpty(username))
+                return Unauthorized("User not logged in.");
+
+            await using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var cmd = new MySqlCommand("SELECT username, email, IsVerified FROM users WHERE username = @u", connection);
+            cmd.Parameters.AddWithValue("@u", username);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            if (!await reader.ReadAsync())
+                return NotFound("User not found.");
+
+            return Ok(new
+            {
+                Username = reader["username"].ToString(),
+                Email = reader["email"].ToString(),
+                Verified = Convert.ToBoolean(reader["IsVerified"])
+            });
         }
     }
 }

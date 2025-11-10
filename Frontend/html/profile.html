@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="profile-container">
+        <img src="images/profile-icon.png" alt="Profile Icon" class="profile-icon-large">
+        <h2 id="usernameDisplay">Loading...</h2>
+        <div class="info">
+        <p><strong>Status:</strong> Logged in</p>
+        <p><strong>Member Since:</strong> <span id="memberSince">N/A</span></p>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+
+    <script>
+    const username = localStorage.getItem("username");
+
+    if (!username) {
+    window.location.href = "/Login.html";
+    } else {
+    fetch(`https://localhost:5001/api/users/${username}`)
+        .then(res => {
+        if (!res.ok) throw new Error("User not found");
+        return res.json();
+        })
+        .then(user => {
+        document.getElementById("usernameDisplay").textContent = user.username;
+        document.getElementById("memberSince").textContent = user.createdAt || "Unknown";
+        })
+        .catch(err => {
+        console.error(err);
+        alert("Error loading profile");
+        });
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("username");
+    window.location.href = "/Login.html";
+});
+</script>
+</body>
+</html>

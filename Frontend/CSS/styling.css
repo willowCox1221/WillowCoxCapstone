@@ -19,42 +19,59 @@ main {
   padding-top: 140px; /* ensures content isn't hidden behind fixed navbar */
 }
 
-
-.profile-menu {
-    position: relative;
+/* Profile Dropdown Container */
+.profile-dropdown {
+    position: absolute;
+    top: 15px;
+    right: 30px;
     display: inline-block;
 }
 
+/* Profile Icon */
 .profile-icon {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     cursor: pointer;
+    border: 2px solid white;
+    transition: transform 0.2s ease;
 }
 
+.profile-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Dropdown Menu */
 .dropdown-menu {
     display: none;
     position: absolute;
-    top: 45px;
     right: 0;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    min-width: 160px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    padding: 10px 0;
     z-index: 1000;
+    min-width: 150px;
 }
 
+/* Dropdown Links */
 .dropdown-menu a {
-    display: block;
-    padding: 10px;
     color: #333;
+    padding: 10px 16px;
     text-decoration: none;
+    display: block;
+    transition: background 0.2s;
 }
 
 .dropdown-menu a:hover {
     background-color: #f0f0f0;
 }
+
+/* Show Dropdown on Click */
+.dropdown-menu.show {
+    display: block;
+}
+
 /* Navbar */
 .navbar {
     background-color: #0078d7;

@@ -9,13 +9,26 @@
 <body>
     <header>
         <nav class="navbar">
-
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="ScanProduct.html">Scan Product</a></li>
-                <li><a href="PersonalInventory.html">Inventory</a></li>
-                <li><a href="Login.html">Login</a></li>
-                <li><a href="SignUp.html">Sign Up</a></li>
+                <li><a id="nav-home" href="index.html">Home</a></li>
+                <li><a id="nav-scan" href="ScanProduct.html">Scan Product</a></li>
+                <li><a id="nav-inventory" href="PersonalInventory.html">Inventory</a></li>
+                <li><a id="nav-login" href="Login.html">Login</a></li>
+                <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
+
+                <div class="profile-dropdown">
+                    <img
+                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                    alt="Profile"
+                    class="profile-icon"
+                    id="profileButton"
+                    />
+
+                    <div class="dropdown-menu" id="profileMenu">
+                        <a href="/profile.html">View Profile</a>
+                        <a href="#" id="signOut">Sign Out</a>
+                    </div>
+                </div>
             </ul>
             <button class="english">English</button>
             <button class="spanish">Español</button>

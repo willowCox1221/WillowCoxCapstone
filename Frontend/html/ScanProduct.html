@@ -91,5 +91,24 @@
     </script>
 
     <script src="../../inventraTranslationAPI/translation.js"></script>
+    <script>
+    const profileButton = document.getElementById("profileButton");
+    const profileMenu = document.getElementById("profileMenu");
+
+    profileButton.addEventListener("click", () => {
+        profileMenu.classList.toggle("show");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!profileButton.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.remove("show");
+        }
+    });
+
+    document.getElementById("signOut").addEventListener("click", () => {
+        localStorage.removeItem("username");
+        window.location.href = "/Login.html";
+    });
+</script>
 </body>
 </html>

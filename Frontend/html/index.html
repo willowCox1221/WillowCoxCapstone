@@ -88,25 +88,23 @@ document.querySelector(".french").addEventListener("click", () => setLanguage("f
 </script>
 
 <script>
-const icon = document.getElementById("profileIcon");
-const menu = document.getElementById("dropdownMenu");
+    const profileButton = document.getElementById("profileButton");
+    const profileMenu = document.getElementById("profileMenu");
 
-icon.addEventListener("click", () => {
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-});
+    profileButton.addEventListener("click", () => {
+        profileMenu.classList.toggle("show");
+    });
 
-// Hide menu when clicking outside
-document.addEventListener("click", (e) => {
-    if (!icon.contains(e.target) && !menu.contains(e.target)) {
-        menu.style.display = "none";
-    }
-});
+    document.addEventListener("click", (e) => {
+        if (!profileButton.contains(e.target) && !profileMenu.contains(e.target)) {
+        profileMenu.classList.remove("show");
+        }
+    });
 
-// Handle sign out
-document.getElementById("signOut").addEventListener("click", () => {
-    localStorage.removeItem("authToken"); // or session info
-    window.location.href = "/login.html";
-});
+    document.getElementById("signOut").addEventListener("click", () => {
+        localStorage.removeItem("username");
+        window.location.href = "/Login.html";
+    });
 </script>
 </body>
 </html>

@@ -21,7 +21,7 @@
     const username = localStorage.getItem("username");
 
     if (!username) {
-    window.location.href = "/Login.html";
+    window.location.href = "../html/Login.html";
     } else {
     fetch(`https://localhost:5001/api/users/${username}`)
         .then(res => {
@@ -40,7 +40,7 @@
 
     document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("username");
-    window.location.href = "/Login.html";
+    window.location.href = "../html/Login.html";
 });
 </script>
 </body>

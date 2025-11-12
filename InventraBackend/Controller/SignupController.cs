@@ -152,27 +152,64 @@ namespace InventraBackend.Controllers
                 await connection.OpenAsync();
 
                 var cmd = new MySqlCommand(@"
-            SELECT username, password, IsVerified
-            FROM users
-            WHERE username = @u;
-        ", connection);
+                    SELECT email, username, password, IsVerified, TokenExpires
+                    FROM users
+                    WHERE username = @u;
+                ", connection);
                 cmd.Parameters.AddWithValue("@u", request.Username);
 
                 using var reader = await cmd.ExecuteReaderAsync();
                 if (!await reader.ReadAsync())
                     return Unauthorized("Invalid username or password.");
 
-                string hashedPassword = reader.GetString(reader.GetOrdinal("password"));
-                bool isVerified = reader.GetBoolean(reader.GetOrdinal("IsVerified"));
+                int emailIndex = reader.GetOrdinal("email");
+                int passwordIndex = reader.GetOrdinal("password");
+                int verifiedIndex = reader.GetOrdinal("IsVerified");
+                int expiresIndex = reader.GetOrdinal("TokenExpires");
 
-                if (!isVerified)
-                    return Unauthorized("Please verify your email before logging in.");
+                string email = reader.GetString(emailIndex);
+                string hashedPassword = reader.GetString(passwordIndex);
+                bool isVerified = reader.GetBoolean(verifiedIndex);
+                DateTime? tokenExpires = reader.IsDBNull(expiresIndex)
+                    ? null
+                    : reader.GetDateTime(expiresIndex);
 
                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, hashedPassword);
                 if (!isPasswordValid)
                     return Unauthorized("Invalid username or password.");
 
-                // ✅ If it reaches here, login is successful
+                // 🔒 User is not verified
+                if (!isVerified)
+                {
+                    // Check if their old token expired
+                    if (tokenExpires == null || tokenExpires < DateTime.UtcNow)
+                    {
+                        await reader.CloseAsync();
+
+                        // Generate a new token
+                        var newToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+                        var newExpiry = DateTime.UtcNow.AddHours(24);
+
+                        var updateCmd = new MySqlCommand(@"
+                            UPDATE users
+                            SET VerificationToken = @t, TokenExpires = @x
+                            WHERE username = @u;
+                        ", connection);
+                        updateCmd.Parameters.AddWithValue("@t", newToken);
+                        updateCmd.Parameters.AddWithValue("@x", newExpiry);
+                        updateCmd.Parameters.AddWithValue("@u", request.Username);
+                        await updateCmd.ExecuteNonQueryAsync();
+
+                        // Resend verification email
+                        await _emailService.SendVerificationEmailAsync(email, newToken);
+
+                        return Unauthorized("Your verification link expired. A new verification email has been sent.");
+                    }
+
+                    return Unauthorized("Please verify your email before logging in.");
+                }
+
+                // ✅ Verified user
                 return Ok(new
                 {
                     message = "Login successful!",
@@ -181,7 +218,6 @@ namespace InventraBackend.Controllers
             }
             catch (Exception ex)
             {
-                // ✅ Catch any DB or runtime errors
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }

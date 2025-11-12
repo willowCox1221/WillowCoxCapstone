@@ -29,8 +29,8 @@
         return res.json();
         })
         .then(user => {
-        document.getElementById("usernameDisplay").textContent = user.username;
-        document.getElementById("memberSince").textContent = user.createdAt || "Unknown";
+        document.getElementById("usernameDisplay").textContent = user.Username;
+        document.getElementById("memberSince").textContent = user.CreatedAt || "Unknown";
         })
         .catch(err => {
         console.error(err);
@@ -41,7 +41,8 @@
     document.getElementById("logoutBtn").addEventListener("click", () => {
     localStorage.removeItem("username");
     window.location.href = "../html/Login.html";
-});
+    });
 </script>
+
 </body>
 </html>

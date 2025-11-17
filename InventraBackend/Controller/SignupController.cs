@@ -207,8 +207,11 @@ namespace InventraBackend.Controllers
                     }
 
                     return Unauthorized("Please verify your email before logging in.");
-                }
 
+
+                }
+                HttpContext.Session.SetString("Username", request.Username);
+                HttpContext.Session.SetString("Email", email);
                 // ✅ Verified user
                 return Ok(new
                 {
@@ -221,20 +224,20 @@ namespace InventraBackend.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-    
-//////////////////////////////Logout Method Added Below////////////////////////////
+
+        //////////////////////////////Logout Method Added Below////////////////////////////
         [HttpPost("logout")]
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             return Ok(new { message = "Logged out successfully." });
         }
-                
-//////////////////////////////Get Profile Method Added Below////////////////////////////
+
+        //////////////////////////////Get Profile Method Added Below////////////////////////////
         [HttpGet("me")]
         public async Task<IActionResult> GetProfile()
         {
-            var username = HttpContext.User.Identity?.Name;
+            var username = HttpContext.Session.GetString("Username");
             if (string.IsNullOrEmpty(username))
                 return Unauthorized("User not logged in.");
 

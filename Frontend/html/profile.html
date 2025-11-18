@@ -4,9 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styling.css">
 </head>
 <body>
+
+    <header>
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a id="nav-home" href="index.html">Home</a></li>
+                <li><a id="nav-scan" href="ScanProduct.html">Scan Product</a></li>
+                <li><a id="nav-inventory" href="PersonalInventory.html">Inventory</a></li>
+                <li><a id="nav-login" href="Login.html">Login</a></li>
+                <li><a id="nav-signup" href="SignUp.html">Sign Up</a></li>
+            </ul>
+
+            <div class="language-buttons">
+                <button class="english">English</button>
+                <button class="spanish">Español</button>
+                <button class="french">Français</button>
+            </div>
+        </nav>
+    </header>
+
     <div class="profile-container">
         <img src="images/profile-icon.png" alt="Profile Icon" class="profile-icon-large">
         <h2 id="usernameDisplay">Loading...</h2>
@@ -15,6 +34,11 @@
         <p><strong>Member Since:</strong> <span id="memberSince">N/A</span></p>
         </div>
         <button class="logout-btn" id="logoutBtn">Sign Out</button>
+    </div>
+
+    <div id="adminPanel" style="display: none;">
+        <h2>Admin Panel</h2>
+        <a href="admin.html">Go to Admin Dashboard</a>
     </div>
 
     <script>
@@ -42,6 +66,12 @@
     localStorage.removeItem("username");
     window.location.href = "../html/Login.html";
     });
+</script>
+
+<script>
+    if (localStorage.getItem("isAdmin") === "true") {
+        document.getElementById("adminPanel").style.display = "block";
+    }
 </script>
 
 </body>

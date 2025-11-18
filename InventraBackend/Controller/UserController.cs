@@ -67,5 +67,7 @@ namespace InventraBackend.Controllers
                 return StatusCode(500, "Error retrieving user profile.");
             }
         }
+
+        
     }
 }

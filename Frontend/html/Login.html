@@ -82,6 +82,7 @@
                 const data = await response.json();
 
                 localStorage.setItem("username", data.username);
+                localStorage.setItem("isAdmin", data.isAdmin ? "true" : "false");
 
                 // Redirect
                 window.location.href = "../html/profile.html";

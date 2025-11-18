@@ -19,6 +19,60 @@ main {
   padding-top: 140px; /* ensures content isn't hidden behind fixed navbar */
 }
 
+
+
+            /*Admin Panel*/
+.admin-header {
+    background: #333;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.admin-container {
+    width: 90%;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#userTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#userTable th, #userTable td {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+button.action {
+    padding: 6px 10px;
+    margin: 2px;
+    cursor: pointer;
+}
+
+button.promote {
+    background: #007bff;
+    color: white;
+}
+
+button.delete {
+    background: #d9534f;
+    color: white;
+}
+
+button.reset {
+    background: #5bc0de;
+    color: white;
+}
+
+
+
+
+            /* Profile*/
 /* Profile Dropdown Container */
 .profile-dropdown {
     position: absolute;
@@ -46,7 +100,7 @@ main {
     display: none;
     position: absolute;
     right: 0;
-    background-color: white;
+    background-color: #0078d7;
     border-radius: 10px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
     padding: 10px 0;
@@ -72,7 +126,9 @@ main {
     display: block;
 }
 
-/* Navbar */
+
+
+            /* Navbar */
 .navbar {
     background-color: #0078d7;
     padding: 15px 30px;
@@ -96,7 +152,9 @@ main {
     color: #ffdd57;
 }
 
-/* Main Section */
+
+
+            /* Main Section */
 main {
     padding: 40px;
     text-align: center;
@@ -281,7 +339,7 @@ button:hover {
 }
 
 
-/* Responsive Navigation (for mobile) */
+            /* Responsive Navigation (for mobile) */
 @media (max-width: 600px) {
     .nav-links {
     flex-direction: column;

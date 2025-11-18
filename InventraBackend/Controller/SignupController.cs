@@ -165,11 +165,13 @@ namespace InventraBackend.Controllers
                 int emailIndex = reader.GetOrdinal("email");
                 int passwordIndex = reader.GetOrdinal("password");
                 int verifiedIndex = reader.GetOrdinal("IsVerified");
+                int IsAdmin = reader.GetOrdinal("IsAdmin");
                 int expiresIndex = reader.GetOrdinal("TokenExpires");
 
                 string email = reader.GetString(emailIndex);
                 string hashedPassword = reader.GetString(passwordIndex);
                 bool isVerified = reader.GetBoolean(verifiedIndex);
+                bool isAdmin = reader.GetBoolean(IsAdmin);
                 DateTime? tokenExpires = reader.IsDBNull(expiresIndex)
                     ? null
                     : reader.GetDateTime(expiresIndex);
@@ -258,5 +260,7 @@ namespace InventraBackend.Controllers
                 Verified = Convert.ToBoolean(reader["IsVerified"])
             });
         }
+
+        
     }
 }

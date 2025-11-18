@@ -152,7 +152,7 @@ namespace InventraBackend.Controllers
                 await connection.OpenAsync();
 
                 var cmd = new MySqlCommand(@"
-                    SELECT email, username, password, IsVerified, TokenExpires
+                    SELECT email, username, password, IsVerified, TokenExpires, isAdmin
                     FROM users
                     WHERE username = @u;
                 ", connection);
@@ -218,7 +218,8 @@ namespace InventraBackend.Controllers
                 return Ok(new
                 {
                     message = "Login successful!",
-                    username = request.Username
+                    username = request.Username,
+                    isAdmin = isAdmin
                 });
             }
             catch (Exception ex)

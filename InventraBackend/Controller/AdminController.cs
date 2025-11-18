@@ -1,106 +1,64 @@
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using InventraBackend.Models;
 
-namespace InventraBackend.Controllers
+public class AdminController : Controller
 {
-    [Route("api/admin")]
-    [ApiController]
-    public class AdminController : ControllerBase
+    private readonly IConfiguration _config;
+
+    public AdminController(IConfiguration config)
     {
-        private readonly IConfiguration _config;
+        _config = config;
+    }
 
-        public AdminController(IConfiguration config)
+    [AdminOnly] // ⬅ protects this page
+    public IActionResult Dashboard()
+    {
+        var users = new List<User>();
+        var inventory = new List<Product>();
+
+        string connectionString = _config.GetConnectionString("DefaultConnection");
+
+        using (var conn = new MySqlConnection(connectionString))
         {
-            _config = config;
-        }
-
-        private MySqlConnection GetConn() =>
-            new MySqlConnection(_config.GetConnectionString("DefaultConnection"));
-
-        // GET ALL USERS
-        [HttpGet("users")]
-        public IActionResult GetUsers()
-        {
-            if (!IsAdmin()) return Unauthorized("Not an admin");
-
-            var list = new List<object>();
-            using var conn = GetConn();
             conn.Open();
 
-            string sql = "SELECT Username, Email, IsVerified, IsAdmin FROM users";
-            using var cmd = new MySqlCommand(sql, conn);
-            using var reader = cmd.ExecuteReader();
-
-            while (reader.Read())
+            // Load users
+            var cmd1 = new MySqlCommand("SELECT id, username, email, role, created_at FROM users", conn);
+            using (var reader = cmd1.ExecuteReader())
             {
-                list.Add(new
+                while (reader.Read())
                 {
-                    Username = reader.GetString("Username"),
-                    Email = reader.GetString("Email"),
-                    IsVerified = reader.GetBoolean("IsVerified"),
-                    IsAdmin = reader.GetBoolean("IsAdmin")
-                });
+                    users.Add(new User
+                    {
+                        Id = reader.GetInt32("id").ToString(),
+                        Username = reader.GetString("username"),
+                        Email = reader.GetString("email"),
+                        Role = reader.GetString("role"),
+                        CreatedAt = reader.GetDateTime("created_at")
+                    });
+                }
             }
-            return Ok(list);
+
+            // Load inventory
+            var cmd2 = new MySqlCommand("SELECT * FROM inventory", conn);
+            using (var reader = cmd2.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    inventory.Add(new Product
+                    {
+                        Id = reader.GetInt32("id"),
+                        Name = reader.GetString("name"),
+                        Quantity = reader.GetInt32("quantity")
+                    });
+                }
+            }
         }
 
-        // PROMOTE USER
-        [HttpPut("promote/{username}")]
-        public IActionResult Promote(string username)
-        {
-            if (!IsAdmin()) return Unauthorized("Not an admin");
+        ViewBag.Users = users;
+        ViewBag.Inventory = inventory;
 
-            using var conn = GetConn();
-            conn.Open();
-
-            string sql = "UPDATE users SET IsAdmin = 1 WHERE Username = @u";
-            using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@u", username);
-            cmd.ExecuteNonQuery();
-
-            return Ok("User promoted.");
-        }
-
-        // DELETE USER
-        [HttpDelete("delete/{username}")]
-        public IActionResult Delete(string username)
-        {
-            if (!IsAdmin()) return Unauthorized("Not an admin");
-
-            using var conn = GetConn();
-            conn.Open();
-
-            string sql = "DELETE FROM users WHERE Username = @u";
-            using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@u", username);
-            cmd.ExecuteNonQuery();
-
-            return Ok("User deleted.");
-        }
-
-        // RESET PASSWORD
-        [HttpPut("reset/{username}")]
-        public IActionResult ResetPassword(string username)
-        {
-            if (!IsAdmin()) return Unauthorized("Not an admin");
-
-            using var conn = GetConn();
-            conn.Open();
-
-            string newHash = BCrypt.Net.BCrypt.HashPassword("temporary123");
-
-            string sql = "UPDATE users SET Password = @p WHERE Username = @u";
-            using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@u", username);
-            cmd.Parameters.AddWithValue("@p", newHash);
-            cmd.ExecuteNonQuery();
-
-            return Ok("Password reset.");
-        }
-
-        private bool IsAdmin()
-        {
-            return HttpContext.Session.GetString("IsAdmin") == "true";
-        }
+        return View();
     }
 }

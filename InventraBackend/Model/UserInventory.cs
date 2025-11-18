@@ -11,6 +11,6 @@ namespace InventraBackend.Models
         public string Id { get; set; } = string.Empty;
 
         public string UserId { get; set; } = string.Empty;
-        public List<InventoryItem> Items { get; set; } = new();
+        public List<Product> Items { get; set; } = new();
     }
 }

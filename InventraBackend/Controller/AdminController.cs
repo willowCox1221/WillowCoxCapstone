@@ -31,7 +31,7 @@ public class AdminController : Controller
                 {
                     users.Add(new User
                     {
-                        Id = reader.GetInt32("id").ToString(),
+                        Id = reader.GetInt32("id"),
                         Username = reader.GetString("username"),
                         Email = reader.GetString("email"),
                         Role = reader.GetString("role"),

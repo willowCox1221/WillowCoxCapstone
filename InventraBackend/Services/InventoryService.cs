@@ -17,7 +17,7 @@ namespace InventraBackend.Services
         public async Task AddItemAsync(string userId, string code)
         {
             var filter = Builders<UserInventory>.Filter.Eq(x => x.UserId, userId);
-            var update = Builders<UserInventory>.Update.Push(x => x.Items, new InventoryItem { Code = code });
+            var update = Builders<UserInventory>.Update.Push(x => x.Items, new Product { Code = code });
             await _inventoryCollection.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
         }
 

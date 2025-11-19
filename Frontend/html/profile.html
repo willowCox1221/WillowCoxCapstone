@@ -42,41 +42,41 @@
     </div>
 
     <script>
-// Load logged-in user from session
-async function loadProfile() {
-    const res = await fetch("https://InventraBackend/api/auth/profile", {
-        credentials: "include"
-    });
+        // Load logged-in user from session
+        async function loadProfile() {
+            const res = await fetch("https://InventraBackend/api/auth/profile", {
+                credentials: "include"
+            });
 
-    if (!res.ok) {
-        // Not logged in → redirect
-        window.location.href = "../html/Login.html";
-        return;
-    }
+            if (!res.ok) {
+                // Not logged in → redirect
+                window.location.href = "../html/Login.html";
+                return;
+            }
 
-    const user = await res.json();
+            const user = await res.json();
 
-    document.getElementById("usernameDisplay").textContent = user.username;
-    document.getElementById("memberSince").textContent =
-        user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown";
+            document.getElementById("usernameDisplay").textContent = user.username;
+            document.getElementById("memberSince").textContent =
+                user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown";
 
-    // Show admin panel if admin
-    if (user.role === "admin") {
-        document.getElementById("adminPanel").style.display = "block";
-    }
-}
+            // Show admin panel if admin
+            if (user.role === "admin") {
+                document.getElementById("adminPanel").style.display = "block";
+            }
+        }
 
-// Logout
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await fetch("https://InventraBackend/api/auth/logout", {
-        method: "POST",
-        credentials: "include"
-    });
+        // Logout
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            await fetch("https://InventraBackend/api/auth/logout", {
+                method: "POST",
+                credentials: "include"
+            });
 
-    window.location.href = "../html/Login.html";
-});
+            window.location.href = "../html/Login.html";
+        });
 
-loadProfile();
+        loadProfile();
 </script>
     <script src="../../inventraTranslationAPI/translation.js"></script>
 

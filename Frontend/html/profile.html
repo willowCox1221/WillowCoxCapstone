@@ -42,37 +42,43 @@
     </div>
 
     <script>
-    const username = localStorage.getItem("username");
+// Load logged-in user from session
+async function loadProfile() {
+    const res = await fetch("https://InventraBackend/api/auth/profile", {
+        credentials: "include"
+    });
 
-    if (!username) {
-    window.location.href = "../html/Login.html";
-    } else {
-    fetch(`https://localhost:5001/api/users/${username}`)
-        .then(res => {
-        if (!res.ok) throw new Error("User not found");
-        return res.json();
-        })
-        .then(user => {
-        document.getElementById("usernameDisplay").textContent = user.Username;
-        document.getElementById("memberSince").textContent = user.CreatedAt || "Unknown";
-        })
-        .catch(err => {
-        console.error(err);
-        alert("Error loading profile");
-        });
+    if (!res.ok) {
+        // Not logged in → redirect
+        window.location.href = "../html/Login.html";
+        return;
     }
 
-    document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("username");
-    window.location.href = "../html/Login.html";
-    });
-</script>
+    const user = await res.json();
 
-<script>
-    if (localStorage.getItem("isAdmin") === "true") {
+    document.getElementById("usernameDisplay").textContent = user.username;
+    document.getElementById("memberSince").textContent =
+        user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown";
+
+    // Show admin panel if admin
+    if (user.role === "admin") {
         document.getElementById("adminPanel").style.display = "block";
     }
+}
+
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await fetch("https://InventraBackend/api/auth/logout", {
+        method: "POST",
+        credentials: "include"
+    });
+
+    window.location.href = "../html/Login.html";
+});
+
+loadProfile();
 </script>
+    <script src="../../inventraTranslationAPI/translation.js"></script>
 
 </body>
 </html>

@@ -34,7 +34,66 @@
 
 </section>
 
-<script src="../Javascript/admin.js"></script>
+<script>
+    async function loadUsers() {
+        const res = await fetch("https://InventraBackend/api/admin/users", { credentials: "include" });
+        const users = await res.json();
+
+        const table = document.querySelector("#userTable tbody");
+        table.innerHTML = "";
+
+        users.forEach(user => {
+            table.innerHTML += `
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.verified ? "Yes" : "No"}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <button onclick="deleteUser('${user._id}')">Delete</button>
+                        ${
+                            user.role === "user"
+                            ? `<button onclick="promote('${user._id}')">Promote</button>`
+                            : `<button onclick="demote('${user._id}')">Demote</button>`
+                        }
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    async function deleteUser(id) {
+        await fetch(`https://InventraBackend/api/admin/delete/${id}`, {
+            method: "DELETE",
+            credentials: "include"
+        });
+        loadUsers();
+    }
+
+    async function promote(id) {
+        await fetch(`https://InventraBackend/api/admin/promote/${id}`, {
+            method: "PUT",
+            credentials: "include"
+        });
+        loadUsers();
+    }
+
+    async function demote(id) {
+        await fetch(`https://InventraBackend/api/admin/demote/${id}`, {
+            method: "PUT",
+            credentials: "include"
+        });
+        loadUsers();
+    }
+
+    loadUsers();
+</script>
+<script>
+    document.getElementById("logoutAdmin").addEventListener("click", () => {
+        // Clear any admin session data if needed
+        window.location.href = "../html/Login.html";
+    });
+</script>
 
 </body>
 </html>

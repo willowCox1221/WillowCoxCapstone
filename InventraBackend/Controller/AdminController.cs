@@ -2,63 +2,118 @@ using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
 using InventraBackend.Models;
 
-public class AdminController : Controller
+namespace InventraBackend.Controllers
 {
-    private readonly IConfiguration _config;
-
-    public AdminController(IConfiguration config)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AdminController : ControllerBase
     {
-        _config = config;
-    }
+        private readonly string _connectionString;
 
-    [AdminOnly] // ⬅ protects this page
-    public IActionResult Dashboard()
-    {
-        var users = new List<User>();
-        var inventory = new List<Product>();
-
-        string connectionString = _config.GetConnectionString("DefaultConnection");
-
-        using (var conn = new MySqlConnection(connectionString))
+        public AdminController(IConfiguration config)
         {
-            conn.Open();
-
-            // Load users
-            var cmd1 = new MySqlCommand("SELECT id, username, email, role, created_at FROM users", conn);
-            using (var reader = cmd1.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    users.Add(new User
-                    {
-                        Id = reader.GetInt32("id"),
-                        Username = reader.GetString("username"),
-                        Email = reader.GetString("email"),
-                        Role = reader.GetString("role"),
-                        CreatedAt = reader.GetDateTime("created_at")
-                    });
-                }
-            }
-
-            // Load inventory
-            var cmd2 = new MySqlCommand("SELECT * FROM inventory", conn);
-            using (var reader = cmd2.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    inventory.Add(new Product
-                    {
-                        Id = reader.GetInt32("id"),
-                        Name = reader.GetString("name"),
-                        Quantity = reader.GetInt32("quantity")
-                    });
-                }
-            }
+            _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
-        ViewBag.Users = users;
-        ViewBag.Inventory = inventory;
+        // ---------------------------------------------------------------------
+        // 🔐 Helper: Check if current user is admin
+        // ---------------------------------------------------------------------
+        private bool IsAdmin()
+        {
+            return HttpContext.Session.GetString("Role") == "admin";
+        }
 
-        return View();
+        // ---------------------------------------------------------------------
+        // 👤 1. Get All Users
+        // ---------------------------------------------------------------------
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsers()
+        {
+            if (!IsAdmin()) return Unauthorized("Admin access required.");
+
+            var users = new List<User>();
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            var cmd = new MySqlCommand("SELECT id, username, email, role, createdAt FROM users", conn);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                int idIndex = reader.GetOrdinal("id");
+                int usernameIndex = reader.GetOrdinal("username");
+                int emailIndex = reader.GetOrdinal("email");
+                int roleIndex = reader.GetOrdinal("role");
+                int createdAtIndex = reader.GetOrdinal("createdAt");
+
+                users.Add(new User
+                {
+                    Id = reader.GetInt32(idIndex),
+                    Username = reader.GetString(usernameIndex),
+                    Email = reader.GetString(emailIndex),
+                    Role = reader.GetString(roleIndex),
+                    CreatedAt = reader.GetDateTime(createdAtIndex)
+                });
+            
+            }
+
+            return Ok(users);
+        }
+
+        // ---------------------------------------------------------------------
+        // 🗑️ 2. Delete User
+        // ---------------------------------------------------------------------
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            if (!IsAdmin()) return Unauthorized("Admin access required.");
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            var cmd = new MySqlCommand("DELETE FROM users WHERE id = @id", conn);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int result = await cmd.ExecuteNonQueryAsync();
+
+            return result > 0 ? Ok("User deleted.") : NotFound("User not found.");
+        }
+
+        // ---------------------------------------------------------------------
+        // ⭐ 3. Promote User to Admin
+        // ---------------------------------------------------------------------
+        [HttpPut("promote/{id}")]
+        public async Task<IActionResult> PromoteUser(int id)
+        {
+            if (!IsAdmin()) return Unauthorized("Admin access required.");
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            var cmd = new MySqlCommand("UPDATE users SET role='admin' WHERE id=@id", conn);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            await cmd.ExecuteNonQueryAsync();
+            return Ok("User promoted to admin.");
+        }
+
+        // ---------------------------------------------------------------------
+        // 🔽 4. Demote Admin to User
+        // ---------------------------------------------------------------------
+        [HttpPut("demote/{id}")]
+        public async Task<IActionResult> DemoteUser(int id)
+        {
+            if (!IsAdmin()) return Unauthorized("Admin access required.");
+
+            await using var conn = new MySqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            var cmd = new MySqlCommand("UPDATE users SET role='user' WHERE id=@id", conn);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            await cmd.ExecuteNonQueryAsync();
+            return Ok("Admin demoted to user.");
+        }
     }
 }

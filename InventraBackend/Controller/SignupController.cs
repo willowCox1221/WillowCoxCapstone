@@ -214,12 +214,13 @@ namespace InventraBackend.Controllers
                 }
                 HttpContext.Session.SetString("Username", request.Username);
                 HttpContext.Session.SetString("Email", email);
+                HttpContext.Session.SetString("Role", isAdmin ? "admin" : "user");
                 // ✅ Verified user
                 return Ok(new
                 {
                     message = "Login successful!",
                     username = request.Username,
-                    isAdmin = isAdmin
+                    role = isAdmin ? "admin" : "user"
                 });
             }
             catch (Exception ex)
@@ -261,7 +262,5 @@ namespace InventraBackend.Controllers
                 Verified = Convert.ToBoolean(reader["IsVerified"])
             });
         }
-
-        
     }
 }

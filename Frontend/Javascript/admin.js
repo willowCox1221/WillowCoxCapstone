@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", loadUsers);
 
 async function loadUsers() {
-    if (localStorage.getItem("isAdmin") !== "true") {
+    if (localStorage.getItem("IsAdmin") !== "true") {
         alert("You are not an admin.");
         window.location.href = "index.html";
         return;

@@ -43,32 +43,28 @@
 
     <script>
         // Load logged-in user from session
-        async function loadProfile() {
-            const res = await fetch("https://InventraBackend/api/auth/profile", {
+            async function loadProfile() {
+            const res = await fetch("https://localhost:5001/api/signup/me", {
                 credentials: "include"
             });
 
             if (!res.ok) {
-                // Not logged in → redirect
                 window.location.href = "../html/Login.html";
                 return;
             }
 
             const user = await res.json();
 
-            document.getElementById("usernameDisplay").textContent = user.username;
-            document.getElementById("memberSince").textContent =
-                user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Unknown";
+            document.getElementById("usernameDisplay").textContent = user.Username;
+            document.getElementById("memberSince").textContent = "N/A"; // you don't return createdAt
 
-            // Show admin panel if admin
             if (user.role === "admin") {
                 document.getElementById("adminPanel").style.display = "block";
             }
         }
 
-        // Logout
         document.getElementById("logoutBtn").addEventListener("click", async () => {
-            await fetch("https://InventraBackend/api/auth/logout", {
+            await fetch("http://localhost:5001/api/signup/logout", {
                 method: "POST",
                 credentials: "include"
             });

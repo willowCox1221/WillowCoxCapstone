@@ -248,7 +248,7 @@ namespace InventraBackend.Controllers
             await using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            var cmd = new MySqlCommand("SELECT username, email, IsVerified FROM users WHERE username = @u", connection);
+            var cmd = new MySqlCommand("SELECT username, email, IsVerified, IsAdmin FROM users WHERE username = @u", connection);
             cmd.Parameters.AddWithValue("@u", username);
 
             using var reader = await cmd.ExecuteReaderAsync();

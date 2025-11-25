@@ -1,3 +1,5 @@
+const API = "https://localhost:5001";  // Your backend URL
+
 document.addEventListener("DOMContentLoaded", loadUsers);
 
 async function loadUsers() {
@@ -7,7 +9,10 @@ async function loadUsers() {
         return;
     }
 
-    const res = await fetch("/api/admin/users");
+    const res = await fetch(`${API}/api/admin/users`, {
+        credentials: "include"
+    });
+
     const users = await res.json();
 
     const tableBody = document.querySelector("#userTable tbody");
@@ -31,16 +36,25 @@ async function loadUsers() {
 }
 
 async function promote(username) {
-    await fetch(`/api/admin/promote/${username}`, { method: "PUT" });
+    await fetch(`${API}/api/admin/promote/${username}`, {
+        method: "PUT",
+        credentials: "include"
+    });
     loadUsers();
 }
 
 async function removeUser(username) {
-    await fetch(`/api/admin/delete/${username}`, { method: "DELETE" });
+    await fetch(`${API}/api/admin/delete/${username}`, {
+        method: "DELETE",
+        credentials: "include"
+    });
     loadUsers();
 }
 
 async function resetPassword(username) {
-    await fetch(`/api/admin/reset/${username}`, { method: "PUT" });
+    await fetch(`${API}/api/admin/reset/${username}`, {
+        method: "PUT",
+        credentials: "include"
+    });
     alert("Password reset to: temporary123");
 }

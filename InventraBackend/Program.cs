@@ -3,13 +3,11 @@ using InventraBackend.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // --- CORS ---
-var allowedFrontendOrigin = builder.Configuration["AllowedFrontendOrigin"] ?? "http://localhost:5500";
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("DefaultCors",
         policy => policy
-            .WithOrigins(allowedFrontendOrigin, "null")
+            .WithOrigins("http://localhost:5500", "http://127.0.0.1:5500", "null")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -24,30 +22,40 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// -------------------------------
+// ⭐ FIXED SESSION CONFIG ⭐
+// -------------------------------
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromHours(2);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
-    options.Cookie.SameSite = SameSiteMode.None;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+    // ⭐ Correct settings for HTTP localhost
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
 });
 
 var app = builder.Build();
-
-// --- PIPELINE (ORDER MATTERS!!) ---
-
-app.UseCors("DefaultCors");       // ✅ MUST BE FIRST
-app.UseHttpsRedirection();
-app.UseRouting();
-app.UseSession();
-app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// ---------------------------------------------
+// ⭐ CORRECT PIPELINE ORDER ⭐
+// ---------------------------------------------
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors("DefaultCors");   // After routing
+
+app.UseSession();             // Before Authorization
+
+app.UseAuthorization();
 
 app.MapControllers();
 

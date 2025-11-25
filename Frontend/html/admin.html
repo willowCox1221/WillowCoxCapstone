@@ -35,43 +35,43 @@
 </section>
 
 <script>
-    async function loadUsers() {
-    const res = await fetch("https://localhost:5001/api/admin/users", {
-        credentials: "include"
-    });
+    const API_BASE = "https://localhost:5001";
 
-    if (!res.ok) {
-        alert("You are not authorized.");
-        window.location.href = "../html/Login.html";
-        return;
+    async function loadUsers() {
+        const res = await fetch(`${API_BASE}/api/admin/users`, {
+            credentials: "include"
+        });
+
+        if (!res.ok) {
+            alert("You are not authorized.");
+            window.location.href = "../html/Login.html";
+            return;
+        }
+
+        const users = await res.json();
+        const table = document.querySelector("#userTable tbody");
+        table.innerHTML = "";
+
+        users.forEach(user => {
+            table.innerHTML += `
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.verified}</td>
+                    <td>${user.isAdmin}</td>
+                    <td>
+                        <button onclick="deleteUser('${user.id}')">Delete</button>
+                        ${user.isAdmin 
+                            ? `<button onclick="demote('${user.id}')">Demote</button>`
+                            : `<button onclick="promote('${user.id}')">Promote</button>`}
+                    </td>
+                </tr>
+            `;
+        });
     }
 
-    const users = await res.json();
-
-    const table = document.querySelector("#userTable tbody");
-    table.innerHTML = "";
-
-    users.forEach(user => {
-        table.innerHTML += `
-            <tr>
-                <td>${user._id}</td>
-                <td>${user.username}</td>
-                <td>${user.email}</td>
-                <td>${user.verified}</td>
-                <td>${user.role}</td>
-                <td>
-                    <button onclick="deleteUser('${user._id}')">Delete</button>
-                    ${user.role === 'user' 
-                        ? `<button onclick="promote('${user._id}')">Promote</button>`
-                        : `<button onclick="demote('${user._id}')">Demote</button>`}
-                </td>
-            </tr>
-        `;
-    });
-}
-
     async function deleteUser(id) {
-        await fetch(`https://InventraBackend/api/admin/delete/${id}`, {
+        await fetch(`${API_BASE}/api/admin/delete/${id}`, {
             method: "DELETE",
             credentials: "include"
         });
@@ -79,7 +79,7 @@
     }
 
     async function promote(id) {
-        await fetch(`https://InventraBackend/api/admin/promote/${id}`, {
+        await fetch(`${API_BASE}/api/admin/promote/${id}`, {
             method: "PUT",
             credentials: "include"
         });
@@ -87,7 +87,7 @@
     }
 
     async function demote(id) {
-        await fetch(`https://InventraBackend/api/admin/demote/${id}`, {
+        await fetch(`${API_BASE}/api/admin/demote/${id}`, {
             method: "PUT",
             credentials: "include"
         });
@@ -96,12 +96,16 @@
 
     loadUsers();
 </script>
+
 <script>
     document.getElementById("logoutAdmin").addEventListener("click", () => {
-        // Clear any admin session data if needed
-        window.location.href = "../html/Login.html";
+        fetch("https://localhost:5001/api/signup/logout", {
+            method: "POST",
+            credentials: "include"
+        }).then(() => {
+            window.location.href = "../html/Login.html";
+        });
     });
 </script>
-
 </body>
 </html>

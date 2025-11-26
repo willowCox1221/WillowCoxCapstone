@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using InventraBackend.Services;
 using InventraBackend.Models;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
 
 namespace InventraBackend.Controllers
 {
@@ -259,8 +260,41 @@ namespace InventraBackend.Controllers
             {
                 Username = reader["username"].ToString(),
                 Email = reader["email"].ToString(),
-                Verified = Convert.ToBoolean(reader["IsVerified"])
+                Verified = Convert.ToBoolean(reader["IsVerified"]),
+                IsAdmin = Convert.ToBoolean(reader["IsAdmin"])
+                
             });
         }
+
+
+        ///////////////////////////////Reset Password////////////////////////////
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
+        {
+            await using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            var token = Guid.NewGuid().ToString(); // secure random token
+            var expiry = DateTime.UtcNow.AddHours(1);
+
+            var cmd = new MySqlCommand(
+                "UPDATE users SET ResetToken=@t, ResetTokenExpiry=@e WHERE email=@em",
+                connection);
+
+            cmd.Parameters.AddWithValue("@t", token);
+            cmd.Parameters.AddWithValue("@e", expiry);
+            cmd.Parameters.AddWithValue("@em", email);
+
+            int rows = await cmd.ExecuteNonQueryAsync();
+            if (rows == 0)
+                return Ok("If this email exists, a reset link has been sent.");
+
+            // ✅ Send Email Here
+            await _emailService.SendResetEmail(email, token);
+
+            return Ok("If this email exists, a reset link has been sent.");
+        }
+
+        
     }
 }

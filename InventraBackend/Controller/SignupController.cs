@@ -268,31 +268,50 @@ namespace InventraBackend.Controllers
 
 
         ///////////////////////////////Reset Password////////////////////////////
-        [HttpPost("resetPassword")]
-        public async Task<IActionResult> RequestPasswordReset([FromBody] string email)
+        [HttpPost("reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
+            if (string.IsNullOrEmpty(request.Token) || string.IsNullOrEmpty(request.NewPassword))
+                return BadRequest("Invalid request.");
+
             await using var connection = new MySqlConnection(_connectionString);
             await connection.OpenAsync();
 
-            var token = Guid.NewGuid().ToString(); // secure random token
-            var expiry = DateTime.UtcNow.AddHours(1);
-
+            // 1. Check token validity
             var cmd = new MySqlCommand(
-                "UPDATE users SET ResetToken=@t, ResetTokenExpiry=@e WHERE email=@em",
-                connection);
+                "SELECT email, ResetTokenExpiry FROM users WHERE ResetToken=@t",
+                connection
+            );
+            cmd.Parameters.AddWithValue("@t", request.Token);
 
-            cmd.Parameters.AddWithValue("@t", token);
-            cmd.Parameters.AddWithValue("@e", expiry);
-            cmd.Parameters.AddWithValue("@em", email);
+            using var reader = await cmd.ExecuteReaderAsync();
 
-            int rows = await cmd.ExecuteNonQueryAsync();
-            if (rows == 0)
-                return Ok("If this email exists, a reset link has been sent.");
+            if (!await reader.ReadAsync())
+                return BadRequest("Invalid or expired token.");
 
-            // ✅ Send Email Here
-            await _emailService.SendResetEmail(email, token);
+            var expiry = Convert.ToDateTime(reader["ResetTokenExpiry"]);
+            var email = reader["email"].ToString();
 
-            return Ok("If this email exists, a reset link has been sent.");
+            if (expiry < DateTime.UtcNow)
+                return BadRequest("Reset token has expired.");
+
+            reader.Close();
+
+            // 2. Hash password
+            var hashed = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+
+            // 3. Update password and clear token
+            var update = new MySqlCommand(
+                "UPDATE users SET password=@p, ResetToken=NULL, ResetTokenExpiry=NULL WHERE email=@e",
+                connection
+            );
+
+            update.Parameters.AddWithValue("@p", hashed);
+            update.Parameters.AddWithValue("@e", email);
+
+            await update.ExecuteNonQueryAsync();
+
+            return Ok("Password has been reset successfully.");
         }
 
         

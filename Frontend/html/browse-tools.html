@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse Tools - Inventra</title>
+
+    <link rel="stylesheet" href="../css/styling.css" />
+        
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div class="navbar-links">
+            <a href="/index.html">Home</a>
+            <a href="/browse-tools.html">Browse Tools</a>
+            <a href="/inventory.html">Inventory</a>
+            <a href="/login.html">Login</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Browse Tools</h1>
+
+        <!-- FILTERS -->
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="Search tools...">
+
+            <select id="categoryFilter">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+
+        <!-- TOOL GRID -->
+        <div id="toolGrid" class="tool-grid"></div>
+
+        <div id="noResults" class="no-results" style="display:none;">
+            No tools found.
+        </div>
+    </div>
+
+    <script>
+        const toolGrid = document.getElementById("toolGrid");
+        const searchInput = document.getElementById("searchInput");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const noResults = document.getElementById("noResults");
+
+        let allTools = [];
+
+        // Fetch tools from backend API
+        async function loadTools() {
+            const response = await fetch("/api/tools");
+            allTools = await response.json();
+
+            populateCategoryFilter();
+            renderTools(allTools);
+        }
+
+        // Fill category dropdown from data
+        function populateCategoryFilter() {
+            const categories = [...new Set(allTools.map(t => t.category))];
+
+            categories.forEach(cat => {
+                const option = document.createElement("option");
+                option.value = cat;
+                option.textContent = cat;
+                categoryFilter.appendChild(option);
+            });
+        }
+
+        // Render tool cards
+        function renderTools(tools) {
+            toolGrid.innerHTML = "";
+
+            if (tools.length === 0) {
+                noResults.style.display = "block";
+                return;
+            }
+
+            noResults.style.display = "none";
+
+            tools.forEach(tool => {
+                const card = document.createElement("div");
+                card.classList.add("tool-card");
+
+                card.innerHTML = `
+                    <img src="${tool.image || 'https://via.placeholder.com/300'}" alt="Tool Image">
+                    <h3>${tool.name}</h3>
+                    <p><strong>Category:</strong> ${tool.category}</p>
+                    <p><strong>Description:</strong> ${tool.description}</p>
+                    <p><strong>Quantity:</strong> ${tool.quantity}</p>
+                `;
+
+                toolGrid.appendChild(card);
+            });
+        }
+
+        // Filter tools
+        function applyFilters() {
+            const search = searchInput.value.toLowerCase();
+            const category = categoryFilter.value;
+
+            const filtered = allTools.filter(t => {
+                const matchesSearch =
+                    t.name.toLowerCase().includes(search) ||
+                    t.description.toLowerCase().includes(search);
+
+                const matchesCategory =
+                    category === "" || t.category === category;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            renderTools(filtered);
+        }
+
+        searchInput.addEventListener("input", applyFilters);
+        categoryFilter.addEventListener("change", applyFilters);
+
+        loadTools();
+    </script>
+
+</body>
+</html>

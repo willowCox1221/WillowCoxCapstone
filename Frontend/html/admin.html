@@ -107,5 +107,33 @@
         });
     });
 </script>
+
+
+
+<h2>Tool Management</h2>
+
+<button id="addToolBtn">+ Add New Tool</button>
+
+<table id="toolsTable">
+    <thead>
+        <tr>
+            <th>Tool Name</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="toolsBody">
+        <!-- Filled by JavaScript -->
+    </tbody>
+</table>
+
+<script src="admin-tools.js"></script>
+<script>
+    document.getElementById("addToolBtn").addEventListener("click", () => {
+        window.location.href = "add-tool.html";
+    });
+</script>
 </body>
 </html>

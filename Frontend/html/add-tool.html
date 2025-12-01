@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Tool (Admin)</title>
+    <link rel="stylesheet" href="../css/styling.css">
+</head>
+<body>
+
+<header>Add Tool</header>
+
+<div class="container">
+    <h2>Add a New Tool</h2>
+
+    <form action="/tools/add" method="POST">
+        
+        <label for="name">Tool Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="brand">Brand</label>
+        <input type="text" id="brand" name="brand" placeholder="Craftsman, Milwaukee, Ryobi, etc." required>
+
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+            <option value="">Choose a Category</option>
+            <option>Power Tools</option>
+            <option>Hand Tools</option>
+            <option>Automotive</option>
+            <option>Garden</option>
+            <option>Electrical</option>
+            <option>Other</option>
+        </select>
+
+        <label for="description">Description</label>
+        <textarea id="description" name="description" placeholder="Short description of the tool..."></textarea>
+
+        <label for="image">Image URL (optional)</label>
+        <input type="text" id="image" name="image" placeholder="https://example.com/tool.jpg">
+
+        <button type="submit">Add Tool</button>
+    </form>
+
+    <a href="admin.html" class="back-link">← Back to Admin Dashboard</a>
+</div>
+
+</body>
+</html>

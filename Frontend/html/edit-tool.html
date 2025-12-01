@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Tool</title>
+
+    <link rel="stylesheet" href="../css/styling.css">
+
+</head>
+<body>
+
+    <div class="container">
+        <h2>Edit Tool</h2>
+
+        <form action="/admin/edit-tool/<%= tool._id %>" method="POST" enctype="multipart/form-data">
+
+            <label>Tool Name</label>
+            <input type="text" name="name" value="<%= tool.name %>" required>
+
+            <label>Brand</label>
+            <input type="text" name="brand" value="<%= tool.brand %>" required>
+
+            <label>Category</label>
+            <input type="text" name="category" value="<%= tool.category %>" required>
+
+            <label>Current Image</label>
+            <% if (tool.image) { %>
+                <img src="<%= tool.image %>" class="img-preview">
+            <% } else { %>
+                <p style="color:#777;">No image uploaded</p>
+            <% } %>
+
+            <label>Upload New Image (optional)</label>
+            <input type="file" name="image">
+
+            <div class="button-row">
+                <a href="/admin" class="btn cancel-btn" style="text-align:center; line-height:38px;">Cancel</a>
+                <button type="submit" class="btn save-btn">Save Changes</button>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>

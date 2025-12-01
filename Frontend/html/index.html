@@ -31,20 +31,62 @@
                 </div>
             </ul>
 
-            <button class="english">English</button>
-            <button class="spanish">Español</button>
-            <button class="french">Français</button>
-
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Search products..." />
-                <button id="search-button">Search</button>
+            <div class="language-buttons">
+                <button class="english">English</button>
+                <button class="spanish">Español</button>
+                <button class="french">Français</button>
             </div>
+
+            
         </nav>
     </header>
     <main class="home-container">
         <h1 id="welcome-title">Welcome to Inventra</h1>
         <p id="welcome-text">Search your products or explore new items in your inventory.</p>
 
+    <select id="categoryFilter">
+        <option value="">All Categories</option>
+        <option value="Hand Tools">Hand Tools</option>
+        <option value="Power Tools">Power Tools</option>
+        <option value="Hardware">Hardware</option>
+    </select>
+
+
+
+
+
+    <script>
+        async function loadTools() {
+        const search = document.getElementById("searchBox").value;
+        const category = document.getElementById("categoryFilter").value;
+
+        let url = "/api/tools?";
+        if (search) url += `search=${encodeURIComponent(search)}&`;
+        if (category) url += `category=${encodeURIComponent(category)}&`;
+
+        const res = await fetch(url);
+        const tools = await res.json();
+
+        const list = document.getElementById("toolsList");
+        list.innerHTML = "";
+
+        tools.forEach(tool => {
+            list.innerHTML += `
+                <div class="tool-card">
+                    <h3>${tool.name}</h3>
+                    <p>${tool.description}</p>
+                    <p><strong>Category:</strong> ${tool.category}</p>
+                    <p><strong>Price:</strong> $${tool.price}</p>
+                </div>
+            `;
+        });
+    }
+
+    document.getElementById("searchBox").addEventListener("input", loadTools);
+    document.getElementById("categoryFilter").addEventListener("change", loadTools);
+
+    loadTools();
+</script>
 
 <script>
 const API_URL = "http://localhost:5000/preset";

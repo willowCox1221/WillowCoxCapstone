@@ -2,45 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Tool</title>
-
-    <link rel="stylesheet" href="../css/styling.css">
-
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
 
-    <div class="container">
-        <h2>Edit Tool</h2>
+<h2>Edit Tool</h2>
 
-        <form action="/admin/edit-tool/<%= tool._id %>" method="POST" enctype="multipart/form-data">
+<form id="editToolForm">
+    <label>Tool Name</label>
+    <input type="text" id="toolName" required>
 
-            <label>Tool Name</label>
-            <input type="text" name="name" value="<%= tool.name %>" required>
+    <label>Brand</label>
+    <input type="text" id="toolBrand" required>
 
-            <label>Brand</label>
-            <input type="text" name="brand" value="<%= tool.brand %>" required>
+    <label>Category</label>
+    <input type="text" id="toolCategory" required>
 
-            <label>Category</label>
-            <input type="text" name="category" value="<%= tool.category %>" required>
+    <label>Image URL</label>
+    <input type="text" id="toolImage">
 
-            <label>Current Image</label>
-            <% if (tool.image) { %>
-                <img src="<%= tool.image %>" class="img-preview">
-            <% } else { %>
-                <p style="color:#777;">No image uploaded</p>
-            <% } %>
+    <button type="submit" class="saveBtn">Save Changes</button>
+</form>
 
-            <label>Upload New Image (optional)</label>
-            <input type="file" name="image">
-
-            <div class="button-row">
-                <a href="/admin" class="btn cancel-btn" style="text-align:center; line-height:38px;">Cancel</a>
-                <button type="submit" class="btn save-btn">Save Changes</button>
-            </div>
-
-        </form>
-    </div>
+<script src="/Javascript/edit-tool.js"></script>
 
 </body>
 </html>

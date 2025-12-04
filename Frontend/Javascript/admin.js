@@ -58,3 +58,35 @@ async function resetPassword(username) {
     });
     alert("Password reset to: temporary123");
 }
+
+document.getElementById("addToolForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const toolData = {
+        name: document.getElementById("name").value,
+        brand: document.getElementById("brand").value,
+        category: document.getElementById("category").value,
+        description: document.getElementById("description").value,
+        imageUrl: document.getElementById("image").value
+    };
+
+    try {
+        const response = await fetch("https://localhost:5000/api/tools/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(toolData)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            alert("Tool added successfully!");
+            window.location.href = "/admin.html";
+        } else {
+            alert("Error: " + result.message);
+        }
+
+    } catch (err) {
+        alert("Failed to connect to server.");
+    }
+});

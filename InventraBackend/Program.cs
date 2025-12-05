@@ -22,11 +22,16 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    )
+);
 
-builder.Services.AddScoped<ToolService>();
+builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddSingleton<DatabaseService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

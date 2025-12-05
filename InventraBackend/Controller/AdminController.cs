@@ -49,11 +49,11 @@ namespace InventraBackend.Controllers
 
                 users.Add(new User
                 {
-                    Id = reader.GetInt32(idIndex),
-                    Username = reader.GetString(usernameIndex),
-                    Email = reader.GetString(emailIndex),
-                    Role = reader.GetString(roleIndex),
-                    CreatedAt = reader.GetDateTime(createdAtIndex)
+                    id = reader.GetInt32(idIndex),
+                    username = reader.GetString(usernameIndex),
+                    email = reader.GetString(emailIndex),
+                    role = reader.GetString(roleIndex),
+                    createdAt = reader.GetDateTime(createdAtIndex)
                 });
             
             }

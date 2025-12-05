@@ -7,6 +7,7 @@ namespace InventraBackend.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<Tool> Tools { get; set; }
+        public DbSet<InventoryItem> Inventory { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

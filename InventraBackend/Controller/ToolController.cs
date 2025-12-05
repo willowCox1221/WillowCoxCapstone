@@ -8,28 +8,29 @@ namespace InventraBackend.Controllers
     [Route("api/[controller]")]
     public class ToolsController : ControllerBase
     {
-        private readonly ToolService _toolService;
+        private readonly InventoryService _toolService;
 
-        public ToolsController(ToolService toolService)
+        public ToolsController(InventoryService toolService)
         {
             _toolService = toolService;
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddTool([FromBody] Tool tool)
+        public async Task<IActionResult> AddItem([FromBody] InventoryItem item)
         {
-            if (tool == null || string.IsNullOrEmpty(tool.Name))
-                return BadRequest(new { message = "Invalid tool data" });
+            if (item == null || string.IsNullOrEmpty(item.Name))
+                return BadRequest(new { message = "Invalid item data" });
 
-            await _toolService.AddToolAsync(tool);
-            return Ok(new { message = "Tool added successfully" });
+            await _toolService.AddItem(item);
+
+            return Ok(new { message = "Item added successfully" });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTools()
+        public async Task<IActionResult> GetAllItems()
         {
-            var tools = await _toolService.GetToolsAsync();
-            return Ok(tools);
+            var items = await _toolService.GetAllItems();
+            return Ok(items);
         }
     }
 }

@@ -1,6 +1,11 @@
 using InventraBackend.Services;
+using Microsoft.EntityFrameworkCore;
+using InventraBackend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
 
 // --- CORS ---
 builder.Services.AddCors(options =>
@@ -13,9 +18,14 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
+
+
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddSingleton<InventoryService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+builder.Services.AddScoped<ToolService>();
 builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddControllers();

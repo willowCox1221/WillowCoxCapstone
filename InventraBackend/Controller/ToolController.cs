@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using InventraBackend.Models;
-using MongoDB.Driver;
+using InventraBackend.Services;
 
 namespace InventraBackend.Controllers
 {
@@ -8,31 +8,27 @@ namespace InventraBackend.Controllers
     [Route("api/[controller]")]
     public class ToolsController : ControllerBase
     {
-        private readonly IMongoCollection<Tool> _tools;
+        private readonly ToolService _toolService;
 
-        public ToolsController(IConfiguration config)
+        public ToolsController(ToolService toolService)
         {
-            var client = new MongoClient(config["MongoDB:ConnectionString"]);
-            var database = client.GetDatabase(config["MongoDB:InventoryDB"]);
-            _tools = database.GetCollection<Tool>("Tools");
+            _toolService = toolService;
         }
 
-        // POST: /api/tools/add
         [HttpPost("add")]
         public async Task<IActionResult> AddTool([FromBody] Tool tool)
         {
             if (tool == null || string.IsNullOrEmpty(tool.Name))
                 return BadRequest(new { message = "Invalid tool data" });
 
-            await _tools.InsertOneAsync(tool);
+            await _toolService.AddToolAsync(tool);
             return Ok(new { message = "Tool added successfully" });
         }
 
-        // GET: /api/tools
         [HttpGet]
         public async Task<IActionResult> GetAllTools()
         {
-            var tools = await _tools.Find(_ => true).ToListAsync();
+            var tools = await _toolService.GetToolsAsync();
             return Ok(tools);
         }
     }

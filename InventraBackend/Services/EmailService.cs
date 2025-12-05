@@ -36,5 +36,30 @@ namespace InventraBackend.Services
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }
+
+        public async Task SendResetEmail(string toEmail, string token)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Inventra", _config["Email:Sender"]));
+            message.To.Add(new MailboxAddress("", toEmail));
+            message.Subject = "Reset your Inventra password";
+
+            string resetUrl = $"https://localhost:5001/api/signup/resetPassword?token={token}";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $@"
+                    <h2>Password Reset Request</h2>
+                    <p>Click below to reset your password:</p>
+                    <a href='{resetUrl}'>Reset Password</a>
+                "
+            };
+
+            using var client = new SmtpClient();
+            await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            await client.AuthenticateAsync(_config["Email:Sender"], _config["Email:Password"]);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
+        }
     }
 }

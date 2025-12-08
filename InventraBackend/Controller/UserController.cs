@@ -1,5 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using InventraBackend.Strategies;
+using MySql.Data.MySqlClient;
+using InventraBackend.Services;
+using InventraBackend.Models;
+using System.Security.Cryptography;
+
+
+
 
 namespace InventraBackend.Controllers
 {
@@ -7,11 +13,11 @@ namespace InventraBackend.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRetrievalStrategy _retrievalStrategy;
+        private readonly string _connectionString;
 
-        public UsersController(IUserRetrievalStrategy retrievalStrategy)
+        public UsersController(IConfiguration config)
         {
-            _retrievalStrategy = retrievalStrategy;
+            _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
         [HttpGet("{username}")]
@@ -20,12 +26,48 @@ namespace InventraBackend.Controllers
             if (string.IsNullOrWhiteSpace(username))
                 return BadRequest("Username is required.");
 
-            var user = await _retrievalStrategy.GetUserProfileAsync(username);
+            try
+            {
+                await using var connection = new MySqlConnection(_connectionString);
+                await connection.OpenAsync();
 
-            if (user == null)
-                return NotFound("User not found.");
+                var cmd = new MySqlCommand(@"
+            SELECT username, email, createdAt, IsVerified
+            FROM users
+            WHERE username = @u;
+        ", connection);
 
-            return Ok(user);
+                cmd.Parameters.AddWithValue("@u", username);
+
+                using var reader = await cmd.ExecuteReaderAsync();
+
+                if (!await reader.ReadAsync())
+                    return NotFound("User not found.");
+
+                var usernameOrdinal = reader.GetOrdinal("username");
+                var emailOrdinal = reader.GetOrdinal("email");
+                var createdAtOrdinal = reader.GetOrdinal("createdAt");
+                var isVerifiedOrdinal = reader.GetOrdinal("IsVerified");
+
+                var user = new
+                {
+                    Username = reader.GetString(usernameOrdinal),
+                    Email = reader.IsDBNull(emailOrdinal) ? null : reader.GetString(emailOrdinal),
+                    CreatedAt = reader.IsDBNull(createdAtOrdinal)
+                        ? null
+                        : reader.GetDateTime(createdAtOrdinal).ToString("yyyy-MM-dd"),
+                    IsVerified = !reader.IsDBNull(isVerifiedOrdinal) && reader.GetBoolean(isVerifiedOrdinal)
+                };
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Error retrieving user profile.");
+            }
         }
+
+        
     }
 }

@@ -12,7 +12,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("DefaultCors",
         policy => policy
-            .WithOrigins("http://localhost:5500", "http://127.0.0.1:5500", "null")
+            .WithOrigins(
+                "http://localhost:5500",
+                "http://127.0.0.1:5500",
+                "null",
+                "https://localhost:7264",   // ADD THIS
+                "http://localhost:7264"     // ADD THIS
+            )
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
@@ -33,7 +39,6 @@ builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddSingleton<DatabaseService>();
 
-builder.Services.AddScoped<IUserRetrievalStrategy, MySqlUserRetrievalStrategy>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

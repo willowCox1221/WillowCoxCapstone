@@ -33,6 +33,13 @@ builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddSingleton<DatabaseService>();
 builder.Services.AddScoped<IToolService, InventoryServiceAdapter>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+// Register the core service
+builder.Services.AddSingleton<IAdminService, AdminService>();
+
+// Wrap it with the decorator
+builder.Services.Decorate<IAdminService, AdminAuthorizationDecorator>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

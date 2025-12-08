@@ -43,17 +43,22 @@ namespace InventraBackend.Services
             using var reader = await cmd.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())
-{
-            items.Add(new InventoryItem
             {
-                id = reader.GetInt32(reader.GetOrdinal("id")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-                Brand = reader.GetString(reader.GetOrdinal("Brand")),
-                Category = reader.GetString(reader.GetOrdinal("Category")),
-                Description = reader.GetString(reader.GetOrdinal("Description")),
-                Image = reader.GetString(reader.GetOrdinal("Image"))
-            });
-}
+                items.Add(new InventoryItem
+                {
+                    id = reader.GetInt32(reader.GetOrdinal("id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Brand = reader.GetString(reader.GetOrdinal("Brand")),
+                    Category = reader.GetString(reader.GetOrdinal("Category")),
+                    Description = reader.IsDBNull(reader.GetOrdinal("Description"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("Description")),
+                    Image = reader.IsDBNull(reader.GetOrdinal("Image"))
+                        ? null
+                        : reader.GetString(reader.GetOrdinal("Image"))
+                });
+            }
+
 
             return items;
         }

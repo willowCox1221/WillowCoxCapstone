@@ -32,6 +32,7 @@ builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<InventoryService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddSingleton<DatabaseService>();
+builder.Services.AddScoped<IToolService, InventoryServiceAdapter>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

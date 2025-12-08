@@ -8,9 +8,9 @@ namespace InventraBackend.Controllers
     [Route("api/[controller]")]
     public class ToolsController : ControllerBase
     {
-        private readonly InventoryService _toolService;
+        private readonly IToolService _toolService;
 
-        public ToolsController(InventoryService toolService)
+        public ToolsController(IToolService toolService)
         {
             _toolService = toolService;
         }

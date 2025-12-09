@@ -30,6 +30,20 @@ namespace InventraBackend.Services
             await cmd.ExecuteNonQueryAsync();
         }
 
+        public async Task<bool> DeleteItem(int id)
+        {
+            using var conn = _db.GetConnection();
+            await conn.OpenAsync();
+
+            string sql = "DELETE FROM inventory WHERE id = @id";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@id", id);
+
+            int rows = await cmd.ExecuteNonQueryAsync();
+            return rows > 0;
+        }
+
         public async Task<List<InventoryItem>> GetAllItems()
         {
             var items = new List<InventoryItem>();

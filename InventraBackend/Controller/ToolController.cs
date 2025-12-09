@@ -26,6 +26,17 @@ namespace InventraBackend.Controllers
             return Ok(new { message = "Item added successfully" });
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteItem(int id)
+        {
+            var deleted = await _toolService.DeleteItem(id);
+
+            if (!deleted)
+                return NotFound(new { message = "Item not found" });
+
+            return Ok(new { message = "Item deleted successfully" });
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAllItems()
         {
